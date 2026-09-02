@@ -203,7 +203,7 @@ reading.forEach(p => {
 
 // 语法测验题库（§4.6）
 const qg = data.quizGrammar || [];
-if (qg.length < 12) err('语法测验题库条数不足：' + qg.length + '（要求 ≥12，正式版全量扩充）');
+if (qg.length < 60) err('语法测验题库条数不足：' + qg.length + '（要求 ≥60，v2.0 M10）');
 const qgIds = new Set();
 qg.forEach(q => {
   if (!q || typeof q.id !== 'string' || !/^gq\d{4}$/.test(q.id)) { err('语法题 id 格式错误：' + (q && q.id)); return; }
@@ -228,12 +228,26 @@ qg.forEach(q => {
   }
 });
 
+// v2.0 M10（A27）：gid 关联格式与「句型/动词活用」题库全覆盖校验
+const qgGids = new Set();
+qg.forEach(q => {
+  if (q.gid === undefined || q.gid === null || q.gid === '') return;
+  if (typeof q.gid !== 'string' || !/^g\d{4}$/.test(q.gid)) { err('[' + (q.id || '?') + '] gid 格式错误：' + q.gid); return; }
+  if (!gIds.has(q.gid)) err('[' + q.id + '] gid 不存在：' + q.gid);
+  qgGids.add(q.gid);
+});
+grammar.forEach(g => {
+  if ((g.group === '句型' || g.group === '动词活用') && !qgGids.has(g.id)) {
+    err('语法题库未覆盖「' + g.group + '」条目：' + g.id + ' ' + g.pattern);
+  }
+});
+
 /* ---------- 输出 ---------- */
 console.log('===== N5 数据完整性校验 =====');
 console.log('词库   : ' + words.length + ' 词（要求 ≥800）');
 console.log('语法   : ' + grammar.length + ' 条（要求 ≥70）—— 助词 ' + (groupCount['助词'] || 0) + ' / 动词活用 ' + (groupCount['动词活用'] || 0) + ' / 句型 ' + (groupCount['句型'] || 0));
 console.log('阅读   : ' + reading.length + ' 篇（要求 ≥10）');
-console.log('语法题 : ' + qg.length + ' 题（要求 ≥12，示例题库）');
+console.log('语法题 : ' + qg.length + ' 题（要求 ≥60）');
 console.log('-----------------------------');
 if (errorCount === 0) {
   console.log('✓ 校验通过：全部数据字段与标记格式正确，零错误');
