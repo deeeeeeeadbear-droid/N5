@@ -338,13 +338,41 @@ body {
 .qz-score-row span { font-size: 15px; color: var(--ink2); }
 .qz-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
 .qz-box h4 { font-size: 13px; letter-spacing: .26em; color: var(--red); font-weight: 800; margin-bottom: 6px; }
-.qz-box ul { list-style: none; border: 1px solid var(--line); }
+.qz-box ul { list-style: none; border: 1px solid var(--line); max-height: 340px; overflow-y: auto; }
 .qz-box li { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: baseline; padding: 8px 14px; border-bottom: 1px solid var(--line); font-size: 15px; }
 .qz-box li:last-child { border-bottom: 0; }
 .qz-box li b { font-size: 17px; }
 .qz-box li em { font-style: normal; color: var(--ink2); font-size: 12px; }
-.qz-box li span { text-align: right; color: var(--ink2); }
+.qz-box li span { text-align: right; color: var(--ink2); font-size: 12.5px; }
 .pv-none { color: var(--ink2); font-size: 14px; padding: 14px 4px; }
+
+/* 测验开局选择 */
+.qz-menu { text-align: left; }
+.menu-t { font-size: 13px; letter-spacing: .28em; color: var(--red); font-weight: 800; margin-bottom: 14px; }
+.menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.menu-card {
+  border: 2px solid var(--ink); background: var(--card); padding: 22px 24px; text-align: left;
+  cursor: pointer; font-family: var(--sans); display: flex; flex-direction: column; gap: 6px;
+  transition: background .12s ease, color .12s ease;
+}
+.menu-card:hover { background: var(--ink); }
+.menu-card:hover b, .menu-card:hover span, .menu-card:hover i { color: #fff; }
+.menu-card b { font-size: 21px; font-weight: 800; letter-spacing: .08em; color: var(--ink); }
+.menu-card span { font-size: 13px; color: var(--ink2); letter-spacing: .04em; line-height: 1.7; }
+.menu-card i { font-style: normal; font-size: 12px; color: var(--ink2); margin-top: 6px; }
+.menu-card i em { font-style: normal; color: var(--red); font-weight: 800; }
+.menu-card:hover i em { color: #ffd0cd; }
+.menu-gw { margin-top: 14px; }
+.blank { display: inline-block; border-bottom: 2px solid var(--red); min-width: 1.4em; text-align: center; }
+
+/* 测验历史：类型徽标 */
+.pv-panel li.hrow { grid-template-columns: auto 1fr auto auto auto; align-items: baseline; gap: 12px; }
+.h-type {
+  font-size: 11px; font-weight: 800; width: 22px; height: 22px; flex: none;
+  display: inline-flex; align-items: center; justify-content: center; border-radius: 3px;
+}
+.h-type.t-w { color: #173a60; background: #e4edf5; }
+.h-type.t-g { color: #7c2d20; background: #f6e2dc; }
 
 /* ==========================================================
    M5 进度视图
@@ -360,7 +388,6 @@ body {
 .pv-panel ul { list-style: none; max-height: 340px; overflow-y: auto; }
 .pv-panel li { display: grid; gap: 6px; padding: 9px 4px; border-bottom: 1px solid var(--line); font-size: 14px; }
 .pv-panel li:last-child { border-bottom: 0; }
-.pv-panel li.hrow { grid-template-columns: 1fr auto auto auto; align-items: baseline; gap: 14px; }
 .h-date { color: var(--ink2); font-size: 12.5px; }
 .h-score { font-weight: 800; font-variant-numeric: tabular-nums; }
 .h-score.good { color: var(--green); }
@@ -382,4 +409,5 @@ body {
   .qz-cols { grid-template-columns: 1fr; }
   .pv-grid { grid-template-columns: repeat(2, 1fr); }
   .pv-cols { grid-template-columns: 1fr; }
+  .menu-grid { grid-template-columns: 1fr; }
 }

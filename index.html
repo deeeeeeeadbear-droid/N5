@@ -139,8 +139,26 @@
         </div>
 
         <div class="quiz-card">
+          <!-- 类型选择 -->
+          <div class="qz-menu" id="qz-menu">
+            <div class="menu-t">选择测验类型</div>
+            <div class="menu-grid">
+              <button class="menu-card" id="qz-m-word" type="button">
+                <b>单词测验</b>
+                <span>10 题 · 中↔日双向 · 即时反馈</span>
+                <i>单词错词 <em id="qz-m-word-n">0</em> 个</i>
+              </button>
+              <button class="menu-card" id="qz-m-grammar" type="button">
+                <b>语法测验</b>
+                <span>10 题 · 填空选择 · 附解析（示例题库）</span>
+                <i>语法错题 <em id="qz-m-grammar-n">0</em> 个</i>
+              </button>
+            </div>
+            <p class="menu-gw"><button class="btn" id="qz-m-gwrong" type="button" hidden>只测语法错题（0）</button></p>
+          </div>
+
           <!-- 答题面板 -->
-          <div id="qz-play">
+          <div id="qz-play" hidden>
             <div class="q-meta">
               <span class="chip" id="qz-dir">中 → 日</span>
               <span id="qz-pos">QUESTION 01 / 10</span>
@@ -232,6 +250,7 @@
 <script src="data/words.js"></script>
 <script src="data/grammar.js"></script>
 <script src="data/reading.js"></script>
+<script src="data/quiz-grammar.js"></script>
 <!-- 共享工具 -->
 <script src="js/annotate.js"></script>
 <script src="js/progress.js"></script>

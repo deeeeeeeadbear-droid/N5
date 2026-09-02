@@ -15,11 +15,12 @@
     learned: 'n5app.learnedWords',
     quiz: 'n5app.quizHistory',
     wrong: 'n5app.wrongWords',
+    wrongG: 'n5app.wrongGrammar',
     version: 'n5app.version'
   };
   var MAX_HISTORY = 20;
 
-  var store = { learned: [], quiz: [], wrong: [] };
+  var store = { learned: [], quiz: [], wrong: [], wrongG: [] };
   var degraded = false; // localStorage 不可用时为 true（仅内存）
   var listeners = [];
 
@@ -36,6 +37,7 @@
       window.localStorage.setItem(KEYS.learned, JSON.stringify(store.learned));
       window.localStorage.setItem(KEYS.quiz, JSON.stringify(store.quiz));
       window.localStorage.setItem(KEYS.wrong, JSON.stringify(store.wrong));
+      window.localStorage.setItem(KEYS.wrongG, JSON.stringify(store.wrongG));
       window.localStorage.setItem(KEYS.version, '1');
     } catch (e) {
       degraded = true; // 降级：仅本会话内存
@@ -46,16 +48,19 @@
     store.learned = readJSON(KEYS.learned, []);
     store.quiz = readJSON(KEYS.quiz, []);
     store.wrong = readJSON(KEYS.wrong, []);
+    store.wrongG = readJSON(KEYS.wrongG, []);
     store.learned = Array.isArray(store.learned) ? store.learned : [];
     store.quiz = Array.isArray(store.quiz) ? store.quiz : [];
     store.wrong = Array.isArray(store.wrong) ? store.wrong : [];
+    store.wrongG = Array.isArray(store.wrongG) ? store.wrongG : [];
   }
 
   function emit() {
     var snapshot = {
       learned: store.learned.slice(),
       quiz: store.quiz.slice(),
-      wrong: store.wrong.slice()
+      wrong: store.wrong.slice(),
+      wrongG: store.wrongG.slice()
     };
     listeners.forEach(function (fn) { try { fn(snapshot); } catch (e) {} });
   }
@@ -102,9 +107,21 @@
       if (i >= 0) { store.wrong.splice(i, 1); saveAll(); emit(); }
     },
 
+    /* —— 语法错题清单（v1.7） —— */
+    grammarWrongList: function () { return store.wrongG.slice(); },
+    grammarWrongCount: function () { return store.wrongG.length; },
+    hasGrammarWrong: function (id) { return inArr(store.wrongG, id); },
+    addGrammarWrong: function (id) {
+      if (!inArr(store.wrongG, id)) { store.wrongG.push(id); saveAll(); emit(); }
+    },
+    removeGrammarWrong: function (id) {
+      var i = store.wrongG.indexOf(id);
+      if (i >= 0) { store.wrongG.splice(i, 1); saveAll(); emit(); }
+    },
+
     /* —— 重置（A19：清除全部 n5app.* 键） —— */
     clearAll: function () {
-      store.learned = []; store.quiz = []; store.wrong = [];
+      store.learned = []; store.quiz = []; store.wrong = []; store.wrongG = [];
       try {
         Object.keys(KEYS).forEach(function (k) { window.localStorage.removeItem(KEYS[k]); });
       } catch (e) { /* 内存模式无需处理 */ }
