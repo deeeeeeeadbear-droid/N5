@@ -170,7 +170,7 @@ words.forEach(w => {
 
 // 语法
 const grammar = data.grammar || [];
-if (grammar.length < 25) err('语法条数不足：' + grammar.length + '（要求 ≥25）');
+if (grammar.length < 70) err('语法条数不足：' + grammar.length + '（要求 ≥70，v2.0 M8）');
 const gIds = new Set();
 const groupCount = {};
 grammar.forEach(g => {
@@ -181,9 +181,9 @@ grammar.forEach(g => {
   groupCount[g.group] = (groupCount[g.group] || 0) + 1;
   checkExamples(g.examples, g.id, true);
 });
-if ((groupCount['助词'] || 0) < 8) err('助词组不足 8 条：当前 ' + (groupCount['助词'] || 0));
-if ((groupCount['动词活用'] || 0) < 8) err('动词活用组不足 8 条：当前 ' + (groupCount['动词活用'] || 0));
-if ((groupCount['句型'] || 0) < 9) err('句型组不足 9 条：当前 ' + (groupCount['句型'] || 0));
+if ((groupCount['助词'] || 0) < 22) err('助词组不足 22 条：当前 ' + (groupCount['助词'] || 0));
+if ((groupCount['动词活用'] || 0) < 16) err('动词活用组不足 16 条：当前 ' + (groupCount['动词活用'] || 0));
+if ((groupCount['句型'] || 0) < 32) err('句型组不足 32 条：当前 ' + (groupCount['句型'] || 0));
 
 // 阅读
 const reading = data.reading || [];
@@ -231,7 +231,7 @@ qg.forEach(q => {
 /* ---------- 输出 ---------- */
 console.log('===== N5 数据完整性校验 =====');
 console.log('词库   : ' + words.length + ' 词（要求 ≥800）');
-console.log('语法   : ' + grammar.length + ' 条（要求 ≥25）—— 助词 ' + (groupCount['助词'] || 0) + ' / 动词活用 ' + (groupCount['动词活用'] || 0) + ' / 句型 ' + (groupCount['句型'] || 0));
+console.log('语法   : ' + grammar.length + ' 条（要求 ≥70）—— 助词 ' + (groupCount['助词'] || 0) + ' / 动词活用 ' + (groupCount['动词活用'] || 0) + ' / 句型 ' + (groupCount['句型'] || 0));
 console.log('阅读   : ' + reading.length + ' 篇（要求 ≥3）');
 console.log('语法题 : ' + qg.length + ' 题（要求 ≥12，示例题库）');
 console.log('-----------------------------');
