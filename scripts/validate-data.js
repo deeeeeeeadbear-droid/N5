@@ -159,6 +159,15 @@ words.forEach(w => {
   checkExamples([w.example], w.id, true);
 });
 
+// 词条查重（v2.0，spec §4.7）：kana 相同且 kanji 相同视为重复；kanji 为空则以 kana 判定
+const dupKey = new Map();
+words.forEach(w => {
+  if (!w || typeof w.id !== 'string' || !/^w\d{4}$/.test(w.id)) return;
+  const key = (w.kana || '') + '\u0000' + (w.kanji || '');
+  if (dupKey.has(key)) err('词条重复（kana/kanji 相同）：' + dupKey.get(key) + ' 与 ' + w.id);
+  else dupKey.set(key, w.id);
+});
+
 // 语法
 const grammar = data.grammar || [];
 if (grammar.length < 25) err('语法条数不足：' + grammar.length + '（要求 ≥25）');
