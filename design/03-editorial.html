@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>风格 03 现代编辑 · N5 日语学习（设计示例）</title>
+<style>
+  :root {
+    --ink: #171717; --ink2: #6f6f6a; --paper: #f7f6f2; --card: #fff; --line: #dedbd1;
+    --red: #dd1f26; --green: #1a7a4e; --serif: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", "Noto Serif SC", "Songti SC", serif;
+    --sans: -apple-system, "Segoe UI", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", "Microsoft YaHei", sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #eeede7; color: var(--ink); font-family: var(--sans); line-height: 1.7; }
+  .metabar { max-width: 720px; margin: 0 auto; padding: 22px 24px 0; font-size: 12px; color: var(--ink2); display: flex; flex-wrap: wrap; gap: 4px 10px; letter-spacing: .06em; }
+  .metabar a { color: var(--red); text-decoration: none; border-bottom: 1px solid currentColor; }
+  .metabar .desc { width: 100%; font-size: 12.5px; }
+  .stage { padding: 20px 12px 70px; }
+  .app {
+    max-width: 680px; margin: 0 auto; background: var(--paper);
+    border: 1px solid #d9d6cb; padding: 0 4px 6px;
+  }
+  .bar { display: flex; align-items: baseline; gap: 14px; padding: 20px 30px 14px; border-bottom: 2px solid var(--ink); flex-wrap: wrap; }
+  .bar .brand { font-size: 20px; font-weight: 800; letter-spacing: .02em; }
+  .bar .brand i { font-style: normal; color: var(--red); }
+  .bar .no { margin-left: auto; font-size: 11px; letter-spacing: .22em; color: var(--ink2); }
+  .nav { display: flex; gap: 2px; padding: 0 30px; border-bottom: 1px solid var(--line); }
+  .nav a { padding: 11px 16px 9px 0; margin-right: 14px; font-size: 13.5px; color: var(--ink2); text-decoration: none; letter-spacing: .12em; position: relative; font-weight: 600; }
+  .nav a::after { content: ""; position: absolute; left: 0; right: 16px; bottom: -1px; height: 2px; background: transparent; }
+  .nav a.cur { color: var(--ink); }
+  .nav a.cur::after { background: var(--red); }
+  .nav a sup { font-size: 8.5px; color: var(--red); margin-left: 2px; letter-spacing: 0; }
+  main { padding: 8px 30px 26px; }
+  section { padding: 26px 0 8px; border-bottom: 1px solid var(--line); }
+  .s-tag { font-size: 10.5px; letter-spacing: .3em; color: var(--red); font-weight: 700; }
+  .s-title { display: flex; align-items: baseline; gap: 14px; margin: 4px 0 16px; }
+  .s-title h2 { font-size: 27px; font-weight: 800; letter-spacing: .02em; }
+  .s-title .idx { font-size: 12px; color: var(--ink2); letter-spacing: .12em; }
+  .search { border: 1px solid var(--ink); padding: 10px 14px; display: flex; gap: 8px; background: var(--card); margin-bottom: 4px; }
+  .search::before { content: "搜索"; font-size: 11px; letter-spacing: .2em; color: var(--ink2); font-weight: 700; align-self: center; }
+  .search input { flex: 1; border: 0; outline: none; font: inherit; font-size: 13.5px; background: none; }
+  ul.words { list-style: none; }
+  ul.words li { display: flex; align-items: center; gap: 14px; padding: 11px 2px; border-bottom: 1px solid var(--line); }
+  ul.words li:last-child { border-bottom: 0; }
+  ul.words .n { font-size: 10.5px; color: #a7a49a; letter-spacing: .05em; width: 30px; flex: none; font-variant-numeric: tabular-nums; }
+  ul.words .wk { min-width: 96px; }
+  ul.words .wk b { font-size: 19px; font-weight: 700; letter-spacing: .04em; }
+  ul.words .wk em { display: block; font-style: normal; font-size: 11px; color: var(--ink2); }
+  ul.words .wk.sealed b::after { content: " ✓已学"; font-size: 9.5px; color: var(--green); font-weight: 600; margin-left: 5px; }
+  .pos { font-size: 10px; letter-spacing: .16em; color: var(--ink2); border: 1px solid var(--line); padding: 2px 7px; border-radius: 2px; flex: none; font-weight: 600; }
+  ul.words .wm { flex: 1; text-align: right; font-weight: 600; font-size: 14.5px; }
+  ul.words .go { font-size: 20px; color: #b9b5a9; font-weight: 300; }
+  .detail { background: var(--card); border: 1px solid var(--ink); margin-top: 22px; padding: 0; }
+  .detail .d-head { display: flex; align-items: baseline; gap: 12px; padding: 16px 18px 12px; border-bottom: 1px solid var(--line); }
+  .detail .dkana { font-size: 40px; font-weight: 800; line-height: 1; letter-spacing: .02em; }
+  .detail .dkanji { font-size: 20px; font-weight: 700; color: var(--ink2); }
+  .detail .dme { margin-left: auto; font-size: 19px; font-weight: 800; }
+  .detail .d-body { padding: 13px 18px 16px; }
+  .d-meta { font-size: 11px; letter-spacing: .2em; color: var(--ink2); margin-bottom: 10px; }
+  .ex { border-left: 3px solid var(--red); padding-left: 13px; margin: 10px 0; }
+  .ex b { display: block; font-size: 15.5px; }
+  .ex span { font-size: 12.5px; color: var(--ink2); }
+  .dacts { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+  .btn { border: 1.5px solid var(--ink); background: none; padding: 7px 18px; font-size: 13px; font-weight: 700; cursor: pointer; letter-spacing: .1em; font-family: var(--sans); }
+  .btn:hover { background: var(--ink); color: #fff; }
+  .btn.fill { background: var(--red); border-color: var(--red); color: #fff; }
+  .btn.fill:hover { background: #b5121b; }
+  .btn.ghost { border-color: transparent; color: var(--ink2); font-weight: 600; }
+  .pattern { font-size: 26px; font-weight: 800; letter-spacing: .08em; display: inline-block; border-bottom: 4px solid var(--ink); padding-bottom: 4px; }
+  .gmeta { font-size: 14px; margin: 10px 0 4px; }
+  .gmeta b { font-size: 10.5px; color: var(--red); letter-spacing: .22em; margin-right: 10px; display: inline-block; min-width: 56px; }
+  .r-title { font-size: 22px; font-weight: 800; }
+  .r-title span { font-size: 13px; color: var(--ink2); font-weight: 400; margin-left: 8px; }
+  .r-body { font-size: 16.5px; line-height: 2.4; margin: 12px 0 6px; }
+  ruby rt { font-size: 9px; color: var(--ink2); }
+  i.gl { font-style: normal; border-bottom: 1px solid var(--red); cursor: pointer; }
+  .tr-toggle { background: none; border: 1px solid var(--ink); padding: 5px 14px; font-size: 12px; cursor: pointer; font-weight: 600; }
+  .tr-cn { display: none; color: var(--ink2); font-size: 13px; margin-top: 10px; padding: 12px 0; border-top: 1px dashed var(--line); }
+  .tr-cn.open { display: block; }
+  .q-head { display: flex; gap: 12px; font-size: 11px; letter-spacing: .2em; color: var(--ink2); font-weight: 700; }
+  .q-head .chip { border: 1px solid var(--ink); padding: 2px 8px; font-size: 10px; }
+  .quiz h3 { font-size: 20px; font-weight: 800; margin: 14px 0 16px; letter-spacing: .02em; }
+  .opt { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; border: 1px solid var(--line); background: var(--card); padding: 12px 15px; font-size: 15.5px; font-weight: 600; cursor: pointer; font-family: var(--sans); margin-bottom: 9px; transition: border-color .1s; }
+  .opt:hover { border-color: var(--ink); }
+  .opt .k { font-size: 10.5px; color: var(--ink2); letter-spacing: .1em; width: 22px; }
+  .opt.on-correct { border-color: var(--green); background: #f0f7f2; }
+  .opt.on-correct .k::after { content: "✓"; color: var(--green); }
+  .opt.on-wrong { border-color: var(--red); background: #fdf1f0; }
+  .opt.on-wrong .k::after { content: "✕"; color: var(--red); }
+  .quiz-feedback { display: none; font-size: 13.5px; padding: 11px 14px; margin-bottom: 10px; }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback .ok, .quiz-feedback .ng { display: none; font-weight: 600; }
+  .quiz-feedback.is-ok .ok, .quiz-feedback.is-ng .ng { display: block; }
+  .quiz-feedback.is-ok { background: #f0f7f2; color: var(--green); }
+  .quiz-feedback.is-ng { background: #fdf1f0; color: #a3121a; }
+  .next { width: 100%; border: 1.5px solid var(--ink); background: var(--ink); color: #fff; padding: 11px; font-size: 13px; letter-spacing: .3em; cursor: pointer; font-weight: 700; }
+  .next:hover { background: var(--red); border-color: var(--red); }
+  .summary { display: flex; gap: 22px; padding: 14px 2px 4px; font-size: 11px; letter-spacing: .16em; color: var(--ink2); flex-wrap: wrap; }
+  .summary b { font-size: 15px; color: var(--ink); margin-right: 4px; font-variant-numeric: tabular-nums; }
+  footer { text-align: right; font-size: 10px; letter-spacing: .24em; color: #b0aca0; padding: 6px 2px 0; }
+</style>
+</head>
+<body>
+<div class="metabar">
+  <a href="index.html">☰ 设计总览</a> ·
+  <a href="01-washi.html">01 和纸墨韵</a> ·
+  <a href="02-ukiyoe.html">02 浮世绘蓝</a> ·
+  <strong>03 现代编辑</strong> ·
+  <a href="04-soft.html">04 柔和治愈 →</a>
+  <span class="desc">黑白杂志编辑风 —— 大字号节奏 · 细分隔线 · 编号系统 · 单一朱红点缀。克制的“设计感”。</span>
+</div>
+
+<div class="stage">
+  <div class="app">
+    <div class="bar">
+      <span class="brand">日本語 N5<i>.</i></span>
+      <span class="no">LANGUAGE NOTEBOOK — VOL.03</span>
+    </div>
+    <nav class="nav">
+      <a class="cur" href="#words">单词<sup>01</sup></a>
+      <a href="#grammar">语法<sup>02</sup></a>
+      <a href="#reading">阅读<sup>03</sup></a>
+      <a href="#quiz">测验<sup>04</sup></a>
+    </nav>
+
+    <main>
+      <section id="words">
+        <div class="s-tag">SECTION 01 — WORDS 单词</div>
+        <div class="s-title"><h2>词库</h2><span class="idx">TOTAL 150 · 已学 12</span></div>
+        <div class="search"><input placeholder="汉字 / 假名 / 中文释义 …"></div>
+        <ul class="words">
+          <li><span class="n">001</span><span class="wk"><b>私</b><em>わたし</em></span><span class="pos">代词</span><span class="wm">我</span><span class="go">→</span></li>
+          <li><span class="n">002</span><span class="wk sealed"><b>学生</b><em>がくせい</em></span><span class="pos">名词</span><span class="wm">学生</span><span class="go">→</span></li>
+          <li><span class="n">003</span><span class="wk"><b>学校</b><em>がっこう</em></span><span class="pos">名词</span><span class="wm">学校</span><span class="go">→</span></li>
+          <li><span class="n">004</span><span class="wk"><b>食べる</b><em>たべる</em></span><span class="pos">动词</span><span class="wm">吃</span><span class="go">→</span></li>
+          <li><span class="n">005</span><span class="wk"><b>行く</b><em>いく</em></span><span class="pos">动词</span><span class="wm">去</span><span class="go">→</span></li>
+          <li><span class="n">006</span><span class="wk"><b>大きい</b><em>おおきい</em></span><span class="pos">形容词</span><span class="wm">大的</span><span class="go">→</span></li>
+          <li><span class="n">007</span><span class="wk"><b>きれい</b><em>きれい</em></span><span class="pos">ナ形容词</span><span class="wm">漂亮・干净</span><span class="go">→</span></li>
+          <li><span class="n">008</span><span class="wk"><b>日本語</b><em>にほんご</em></span><span class="pos">名词</span><span class="wm">日语</span><span class="go">→</span></li>
+        </ul>
+
+        <div class="detail">
+          <div class="d-head"><span class="dkana">たべる</span><span class="dkanji">食べる</span><span class="dme">吃</span></div>
+          <div class="d-body">
+            <div class="d-meta">动词 · ②类动词 · NO.004</div>
+            <div class="ex"><b>朝ごはんを食べます。</b><span>吃早饭。（早饭 ＋ を ＋ 吃）</span></div>
+            <div class="dacts">
+              <button class="btn fill">✓ 标记为已学</button>
+              <button class="btn">‹ 上一词</button>
+              <button class="btn">下一词 ›</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="grammar">
+        <div class="s-tag">SECTION 02 — GRAMMAR 语法</div>
+        <div class="s-title"><h2>句型</h2><span class="idx">25 PATTERNS · N5</span></div>
+        <div class="pattern">〜は〜です</div>
+        <p class="gmeta"><b>含义</b>…是…（判断句）</p>
+        <p class="gmeta"><b>接续</b>名词 は 名词 です</p>
+        <div style="margin-top:12px">
+          <div class="ex"><b>わたしは田中です。</b><span>我是田中。</span></div>
+          <div class="ex"><b>これは本です。</b><span>这是书。</span></div>
+        </div>
+        <p class="gmeta"><b>注意</b>口语中「では」常说成「じゃ」。</p>
+      </section>
+
+      <section id="reading">
+        <div class="s-tag">SECTION 03 — READING 阅读</div>
+        <div class="s-title"><h2>短文</h2><span class="idx">私の一日 · 我的一天</span></div>
+        <p class="r-body">
+          私<ruby>私<rt>わたし</rt></ruby>は学生です。<i class="gl">毎日<ruby>毎日<rt>まいにち</rt></ruby></i><ruby>学校<rt>がっこう</rt></ruby>へ<i class="gl"><ruby>行<rt>い</rt></ruby></i>きます。
+          <ruby>昼<rt>ひる</rt></ruby>ごはんは<i class="gl"><ruby>友<rt>とも</rt></ruby></i>だちと<i class="gl"><ruby>食<rt>た</rt></ruby></i>べます。<i class="gl"><ruby>日本語<rt>にほんご</rt></ruby></i>の<i class="gl"><ruby>勉強<rt>べんきょう</rt></ruby></i>は<i class="gl"><ruby>楽<rt>たの</rt></ruby></i>しいです。
+        </p>
+        <button class="tr-toggle">显示翻译</button>
+        <p class="tr-cn">我是学生。每天去学校。午饭和朋友一起吃。学习日语很开心。 —— 下划线词为生词，点击可查释义。</p>
+      </section>
+
+      <section id="quiz">
+        <div class="s-tag">SECTION 04 — QUIZ 测验</div>
+        <div class="s-title"><h2>自测</h2><span class="idx">ROUND 3 / 10</span></div>
+        <div class="q-head"><span class="chip">中 → 日</span><span>QUESTION 03 / 10</span></div>
+        <h3>「我」对应的日语是？</h3>
+        <button class="opt" data-opt="0"><span class="k">A</span><span>行く（いく）</span></button>
+        <button class="opt" data-opt="1"><span class="k">B</span><span>私（わたし）</span></button>
+        <button class="opt" data-opt="0"><span class="k">C</span><span>大きい（おおきい）</span></button>
+        <button class="opt" data-opt="0"><span class="k">D</span><span>日本語（にほんご）</span></button>
+        <div class="quiz-feedback"><span class="ok">✓ 正解 — 「私」读作 わたし。</span><span class="ng">✕ 正确答案 — 「私」わたし。</span></div>
+        <button class="next">下一题 →</button>
+      </section>
+    </main>
+
+    <div class="summary">
+      <span><b>12</b>已学单词</span>
+      <span><b>8/10</b>最近得分</span>
+      <span><b>2</b>错词待复习</span>
+    </div>
+    <footer>日本語 N5 · 设计示例 03 · STYLE SPECIMEN</footer>
+  </div>
+</div>
+
+<script>
+(function () {
+  var q = document.querySelector('.quiz');
+  if (q) {
+    q.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-opt]');
+      if (!b || q.classList.contains('done')) return;
+      var right = b.getAttribute('data-opt') === '1';
+      q.classList.add('done');
+      b.classList.add(right ? 'on-correct' : 'on-wrong');
+      if (!right) { var ok = q.querySelector('[data-opt="1"]'); if (ok) ok.classList.add('on-correct'); }
+      var fb = q.querySelector('.quiz-feedback');
+      if (fb) { fb.classList.add('show'); fb.classList.add(right ? 'is-ok' : 'is-ng'); }
+    });
+  }
+  var t = document.querySelector('.tr-toggle');
+  var box = document.querySelector('.tr-cn');
+  if (t && box) {
+    t.addEventListener('click', function () {
+      var open = box.classList.toggle('open');
+      t.textContent = open ? '隐藏翻译' : '显示翻译';
+    });
+  }
+})();
+</script>
+</body>
+</html>

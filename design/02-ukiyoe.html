@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>风格 02 浮世绘蓝 · N5 日语学习（设计示例）</title>
+<style>
+  :root {
+    --deep: #12345e; --navy: #1d4e79; --wave: #2c5f8a; --pale: #7fa8c8;
+    --paper: #f6ecd8; --card: #fffdf6; --ink: #24303c; --ink-soft: #64798c;
+    --sun: #c8483a; --gold: #c9a24b; --green: #2e7d4f;
+    --serif: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", "Noto Serif SC", "Songti SC", serif;
+    --sans: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", "Microsoft YaHei", sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--deep);
+    background-image: radial-gradient(rgba(255,255,255,.05) 1.5px, transparent 2px), repeating-radial-gradient(circle at 50% 118%, rgba(127,168,200,.12) 0 90px, transparent 90px 190px);
+    color: var(--ink); font-family: var(--sans); line-height: 1.65;
+  }
+  .metabar { max-width: 560px; margin: 0 auto; padding: 16px 18px 0; font-size: 12.5px; color: #bfd3e4; display: flex; flex-wrap: wrap; gap: 4px 8px; }
+  .metabar a { color: #ffd9a0; text-decoration: none; border-bottom: 1px dotted #ffd9a0; }
+  .metabar .desc { width: 100%; color: #8fb0cd; font-size: 12.5px; letter-spacing: .04em; }
+  .stage { padding: 20px 12px 60px; }
+  .app { max-width: 520px; margin: 0 auto; background: var(--paper); box-shadow: 0 30px 60px -22px rgba(0,0,0,.55); position: relative; }
+  .frame { border: 6px solid #0d2947; border-top: 0; }
+  header { background: linear-gradient(160deg, var(--deep), var(--navy)); color: #f2e9d4; padding: 16px 20px 14px; display: flex; align-items: center; gap: 12px; position: relative; overflow: hidden; }
+  header::after { content: ""; position: absolute; right: -26px; top: -30px; width: 110px; height: 110px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #e56a54, var(--sun) 70%); opacity: .95; box-shadow: 0 0 0 6px rgba(255,255,255,.08); }
+  .brand { font-family: var(--serif); font-size: 21px; letter-spacing: .16em; font-weight: 600; }
+  .brand small { display: block; font-family: var(--sans); font-size: 10px; letter-spacing: .42em; color: #c9d8e6; font-weight: 400; margin-top: 2px; }
+  .tabs { display: flex; background: #0d2947; }
+  .tabs a { flex: 1; text-align: center; padding: 9px 0 8px; font-size: 14px; color: #d7e3ee; text-decoration: none; letter-spacing: .3em; border-top: 2px solid transparent; border-bottom: 2px solid transparent; }
+  .tabs a.cur { color: #ffe3ae; border-bottom-color: var(--sun); background: rgba(255,255,255,.05); }
+  main { padding: 4px 20px 20px; }
+  .wave { height: 7px; margin: 14px 0 2px; background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 7' preserveAspectRatio='none'><path d='M0 4 Q5.5 0 11 4 T22 4 T33 4 T44 4' fill='none' stroke='%232c5f8a' stroke-width='1.6'/></svg>") repeat-x bottom; opacity: .5; background-size: 44px 7px; }
+  section { padding: 14px 0 6px; }
+  .sec-head { display: flex; align-items: baseline; gap: 9px; margin-bottom: 12px; }
+  .sec-head .no { display: inline-flex; width: 26px; height: 26px; background: var(--navy); color: #ffe9c4; font-family: var(--serif); font-size: 14px; align-items: center; justify-content: center; border-radius: 50%; flex: none; }
+  .sec-head h2 { font-size: 19px; font-weight: 700; letter-spacing: .24em; color: #173a60; }
+  .sec-head .jp { margin-left: auto; font-size: 11px; color: #8f7a5a; letter-spacing: .3em; }
+  .search { display: flex; align-items: center; gap: 8px; background: var(--card); border: 1px solid #ddcba4; padding: 9px 13px; margin-bottom: 10px; box-shadow: 2px 2px 0 rgba(29,78,121,.12); }
+  .search i { font-style: normal; color: var(--wave); font-size: 16px; }
+  .search input { flex: 1; border: 0; background: none; outline: none; font: inherit; font-size: 13.5px; color: var(--ink); }
+  ul.words { list-style: none; }
+  ul.words li { display: flex; align-items: center; gap: 11px; background: var(--card); padding: 9px 13px; margin-bottom: 7px; border: 1px solid #e2d2ac; box-shadow: 2px 2px 0 rgba(29,78,121,.10); transition: transform .1s ease; }
+  ul.words li:hover { transform: translateY(-1px); }
+  ul.words .wk { font-family: var(--serif); font-size: 20px; min-width: 78px; color: #16334f; }
+  ul.words .wk em { display: block; font-style: normal; font-family: var(--sans); font-size: 10.5px; color: #8a9eb0; font-weight: 600; }
+  ul.words .wk.sealed::after { content: "✓"; color: var(--card); background: var(--green); font-size: 10px; border-radius: 50%; width: 16px; height: 16px; display: inline-flex; align-items: center; justify-content: center; margin-left: 5px; vertical-align: 3px; }
+  .pos { font-size: 10.5px; color: var(--navy); background: #e4edf5; border-radius: 3px; padding: 1px 8px; flex: none; font-weight: 600; white-space: nowrap; }
+  ul.words .wm { flex: 1; text-align: right; font-size: 14px; color: #3f4a55; }
+  .card { background: var(--card); border: 1px solid #e2d2ac; padding: 15px 17px; box-shadow: 3px 3px 0 rgba(29,78,121,.12); position: relative; }
+  .card h3 { font-size: 12.5px; letter-spacing: .34em; color: #9c7f46; margin-bottom: 10px; font-weight: 700; }
+  .card h3::before { content: "◆ "; color: var(--sun); font-size: 9px; vertical-align: 2px; }
+  .dkana { font-family: var(--serif); font-size: 32px; line-height: 1.3; color: #16334f; letter-spacing: .05em; }
+  .dkana .kanji { font-size: 17px; color: #5c7086; margin-left: 8px; }
+  .drow { display: flex; gap: 9px; align-items: center; margin-top: 5px; flex-wrap: wrap; }
+  .dme { font-size: 16px; font-weight: 700; color: #24415f; margin: 5px 0 10px; }
+  .ex { background: #f4ecdb; border-left: 3px solid var(--gold); padding: 9px 13px; font-size: 12.5px; color: #68727c; }
+  .ex b { display: block; font-size: 15px; color: #25415e; margin-bottom: 2px; font-weight: 600; }
+  .dacts { display: flex; gap: 9px; margin-top: 13px; flex-wrap: wrap; }
+  .btn { border: 1.5px solid var(--navy); background: transparent; color: var(--navy); padding: 6px 16px; font-size: 13px; cursor: pointer; letter-spacing: .14em; font-weight: 600; }
+  .btn:hover { background: var(--navy); color: #fff3da; }
+  .btn.red { background: var(--sun); border-color: var(--sun); color: #fff6e6; box-shadow: 2px 2px 0 #7e2a20; }
+  .btn.ghost { border-color: transparent; color: #7f93a6; font-size: 12px; }
+  .pattern { display: inline-block; border: 2px double var(--navy); padding: 7px 16px; font-family: var(--serif); font-size: 21px; color: #16334f; background: #fffef8; margin-bottom: 10px; letter-spacing: .1em; }
+  .gmeta { font-size: 13px; margin: 5px 0; }
+  .gmeta b { color: var(--sun); font-size: 12px; margin-right: 8px; letter-spacing: .14em; }
+  .gmeta span { color: #3b4a58; }
+  .r-title { font-family: var(--serif); font-size: 19px; color: #173a60; letter-spacing: .18em; }
+  .r-title span { font-size: 12px; color: #9c8a63; margin-left: 8px; }
+  .r-body { font-family: var(--serif); font-size: 16px; line-height: 2.3; margin: 10px 0 4px; color: #333f4b; }
+  ruby rt { font-size: 9px; color: #c4683f; }
+  i.gl { font-style: normal; background: linear-gradient(transparent 78%, #ffe3b0 78%); cursor: pointer; }
+  .legend { font-size: 11px; color: #8c7a58; margin-bottom: 8px; }
+  .tr-toggle { border: 1px solid var(--gold); color: #8a6a24; background: transparent; font-size: 12px; padding: 4px 12px; cursor: pointer; }
+  .tr-cn { display: none; background: #f4ecdb; border-left: 3px solid var(--gold); padding: 9px 13px; font-size: 13px; color: #5d6a76; margin-top: 9px; }
+  .tr-cn.open { display: block; }
+  .q-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .q-chip { font-size: 11px; color: var(--sun); border: 1px solid var(--sun); padding: 1px 9px; border-radius: 2px; font-weight: 700; }
+  .q-count { margin-left: auto; font-size: 11.5px; color: #8a9eb0; }
+  .quiz h3 { font-size: 17px; color: #173a60; margin: 8px 0 12px; }
+  .opt { display: flex; align-items: center; gap: 11px; width: 100%; text-align: left; background: var(--card); border: 1.5px solid #ddd0ae; padding: 9px 13px; font-size: 15px; cursor: pointer; font-family: var(--sans); color: var(--ink); margin-bottom: 8px; box-shadow: 2px 2px 0 rgba(29,78,121,.08); }
+  .opt:hover { border-color: var(--wave); }
+  .opt .k { width: 24px; height: 24px; border-radius: 50%; background: #e7eef5; color: var(--navy); font-size: 12px; display: flex; align-items: center; justify-content: center; flex: none; font-weight: 700; }
+  .opt.on-correct { background: #e7f2ea; border-color: var(--green); }
+  .opt.on-correct .k { background: var(--green); color: #fff; }
+  .opt.on-wrong { background: #f9e7e2; border-color: var(--sun); }
+  .opt.on-wrong .k { background: var(--sun); color: #fff; }
+  .quiz-feedback { display: none; font-size: 13.5px; padding: 10px 13px; margin: 2px 0 4px; }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback .ok, .quiz-feedback .ng { display: none; }
+  .quiz-feedback.is-ok .ok, .quiz-feedback.is-ng .ng { display: block; }
+  .quiz-feedback.is-ok { background: #e7f2ea; border: 1px solid #bfd9c6; color: #24553a; }
+  .quiz-feedback.is-ng { background: #f9e7e2; border: 1px solid #e7c0b6; color: #8a3425; }
+  .next { width: 100%; margin-top: 8px; background: var(--navy); border: 1.5px solid var(--navy); color: #fff3da; padding: 10px; font-size: 13.5px; letter-spacing: .34em; cursor: pointer; box-shadow: 3px 3px 0 #0d2947; }
+  .next:hover { background: #173a60; }
+  .summary { display: flex; justify-content: center; gap: 14px; padding: 13px 10px; border-top: 1px solid #ddcba4; font-size: 12px; color: #7d6a48; flex-wrap: wrap; }
+  .summary b { color: var(--navy); font-size: 14px; margin-right: 3px; font-family: var(--serif); }
+  footer { text-align: center; color: #bfa980; font-size: 10.5px; letter-spacing: .3em; padding: 10px 0 13px; }
+</style>
+</head>
+<body>
+<div class="metabar">
+  <a href="index.html">☰ 设计总览</a> ·
+  <a href="01-washi.html">← 01 和纸墨韵</a> ·
+  <strong>02 浮世绘蓝</strong> ·
+  <a href="03-editorial.html">03 现代编辑 →</a> ·
+  <a href="04-soft.html">04 柔和治愈</a>
+  <span class="desc">江户浮世绘 —— 普鲁士蓝 · 浪纹分隔 · 朱色日轮，大胆出挑、记忆点强。</span>
+</div>
+
+<div class="stage">
+  <div class="app">
+    <div class="frame">
+      <header>
+        <div class="brand">日本語 N5<small>ことばの波 · 学习记录</small></div>
+      </header>
+      <nav class="tabs">
+        <a class="cur" href="#words">单词</a>
+        <a href="#grammar">语法</a>
+        <a href="#reading">阅读</a>
+        <a href="#quiz">测验</a>
+      </nav>
+
+      <main>
+        <section id="words">
+          <div class="sec-head"><span class="no">壹</span><h2>单词</h2><span class="jp">たんご</span></div>
+          <div class="search"><i>⌕</i><input placeholder="搜索单词・假名・中文释义"></div>
+          <ul class="words">
+            <li><span class="wk">私<em>わたし</em></span><span class="pos">代词</span><span class="wm">我</span></li>
+            <li><span class="wk sealed">学生<em>がくせい</em></span><span class="pos">名词</span><span class="wm">学生</span></li>
+            <li><span class="wk">学校<em>がっこう</em></span><span class="pos">名词</span><span class="wm">学校</span></li>
+            <li><span class="wk">食べる<em>たべる</em></span><span class="pos">动词</span><span class="wm">吃</span></li>
+            <li><span class="wk">行く<em>いく</em></span><span class="pos">动词</span><span class="wm">去</span></li>
+            <li><span class="wk">大きい<em>おおきい</em></span><span class="pos">形容词</span><span class="wm">大的</span></li>
+            <li><span class="wk">きれい<em>きれい</em></span><span class="pos">ナ形容词</span><span class="wm">漂亮・干净</span></li>
+            <li><span class="wk">日本語<em>にほんご</em></span><span class="pos">名词</span><span class="wm">日语</span></li>
+          </ul>
+
+          <div class="card" style="margin-top:15px">
+            <h3>词 卡</h3>
+            <div class="dkana">たべる<span class="kanji">食べる</span></div>
+            <div class="drow"><span class="pos">动词</span><span style="font-size:12px;color:#8a9eb0">②类动词</span></div>
+            <div class="dme">吃</div>
+            <div class="ex"><b>朝ごはんを食べます。</b><span>吃早饭。（早饭＋を＋吃）</span></div>
+            <div class="dacts">
+              <button class="btn red">✓ 标记为已学</button>
+              <button class="btn ghost">‹ 上一词</button>
+              <button class="btn ghost">下一词 ›</button>
+            </div>
+          </div>
+        </section>
+        <div class="wave"></div>
+
+        <section id="grammar">
+          <div class="sec-head"><span class="no">贰</span><h2>语法</h2><span class="jp">ぶんぽう</span></div>
+          <div class="card">
+            <h3>句型</h3>
+            <span class="pattern">～は～です</span>
+            <p class="gmeta"><b>含义</b><span>…是…（判断句）</span></p>
+            <p class="gmeta"><b>接续</b><span>名词 は 名词 です</span></p>
+            <div style="margin-top:10px">
+              <div class="ex"><b>わたしは田中です。</b><span>我是田中。</span></div>
+              <div class="ex" style="margin-top:6px"><b>これは本です。</b><span>这是书。</span></div>
+            </div>
+            <p class="gmeta" style="margin-top:10px"><b>注意</b><span>口语中「では」常说成「じゃ」。</span></p>
+          </div>
+        </section>
+        <div class="wave"></div>
+
+        <section id="reading">
+          <div class="sec-head"><span class="no">叁</span><h2>阅读</h2><span class="jp">どくしょ</span></div>
+          <div class="card">
+            <h3>短文</h3>
+            <div class="r-title">私の一日<span>我的一天</span></div>
+            <p class="legend">※ 黄色标注为生词（示例：点击查义）</p>
+            <p class="r-body">
+              私<ruby>私<rt>わたし</rt></ruby>は学生です。<i class="gl">毎日<ruby>毎日<rt>まいにち</rt></ruby></i><ruby>学校<rt>がっこう</rt></ruby>へ<i class="gl"><ruby>行<rt>い</rt></ruby></i>きます。
+              <ruby>昼<rt>ひる</rt></ruby>ごはんは<i class="gl"><ruby>友<rt>とも</rt></ruby></i>だちと<i class="gl"><ruby>食<rt>た</rt></ruby></i>べます。<i class="gl"><ruby>日本語<rt>にほんご</rt></ruby></i>の<i class="gl"><ruby>勉強<rt>べんきょう</rt></ruby></i>は<i class="gl"><ruby>楽<rt>たの</rt></ruby></i>しいです。
+            </p>
+            <button class="tr-toggle">显示翻译</button>
+            <p class="tr-cn">我是学生。每天去学校。午饭和朋友一起吃。学习日语很开心。</p>
+          </div>
+        </section>
+        <div class="wave"></div>
+
+        <section id="quiz">
+          <div class="sec-head"><span class="no">肆</span><h2>测验</h2><span class="jp">テスト</span></div>
+          <div class="card">
+            <h3>单词测验</h3>
+            <div class="q-head"><span class="q-chip">中 → 日</span><span class="q-count">第 3 题 / 共 10 题</span></div>
+            <h3 style="margin-top:10px">「我」对应的日语是？</h3>
+            <button class="opt" data-opt="0"><span class="k">A</span><span>行く（いく）</span></button>
+            <button class="opt" data-opt="1"><span class="k">B</span><span>私（わたし）</span></button>
+            <button class="opt" data-opt="0"><span class="k">C</span><span>大きい（おおきい）</span></button>
+            <button class="opt" data-opt="0"><span class="k">D</span><span>日本語（にほんご）</span></button>
+            <div class="quiz-feedback"><span class="ok">正解！「私」读作 わたし。</span><span class="ng">不对哦 —— 正确答案是「私」，读作 わたし。</span></div>
+            <button class="next">下一题 ›</button>
+          </div>
+        </section>
+      </main>
+
+      <div class="summary">
+        <span><b>12</b>已学单词</span>
+        <span><b>8/10</b>最近得分</span>
+        <span><b>2</b>错词待复习</span>
+      </div>
+      <footer>日本語 N5 · 设计示例 02</footer>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var q = document.querySelector('.quiz');
+  if (q) {
+    q.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-opt]');
+      if (!b || q.classList.contains('done')) return;
+      var right = b.getAttribute('data-opt') === '1';
+      q.classList.add('done');
+      b.classList.add(right ? 'on-correct' : 'on-wrong');
+      if (!right) { var ok = q.querySelector('[data-opt="1"]'); if (ok) ok.classList.add('on-correct'); }
+      var fb = q.querySelector('.quiz-feedback');
+      if (fb) { fb.classList.add('show'); fb.classList.add(right ? 'is-ok' : 'is-ng'); }
+    });
+  }
+  var t = document.querySelector('.tr-toggle');
+  var box = document.querySelector('.tr-cn');
+  if (t && box) {
+    t.addEventListener('click', function () {
+      var open = box.classList.toggle('open');
+      t.textContent = open ? '隐藏翻译' : '显示翻译';
+    });
+  }
+})();
+</script>
+</body>
+</html>

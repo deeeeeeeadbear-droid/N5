@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>N5 日语学习 App · 设计风格示例总览</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", "Hiragino Sans", "Yu Gothic", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    background: #f4f4f2; color: #26262b; line-height: 1.7; padding: 40px 16px 64px;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; }
+  h1 { font-size: 26px; letter-spacing: .04em; }
+  h1 small { display: block; font-size: 13px; color: #8a8a90; font-weight: 400; margin-top: 6px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; margin-top: 28px; }
+  .card {
+    background: #fff; border: 1px solid #e6e6e2; border-radius: 14px; padding: 18px;
+    display: flex; flex-direction: column; gap: 10px; text-decoration: none; color: inherit;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 12px 24px -12px rgba(0,0,0,.25); }
+  .num { font-size: 12px; letter-spacing: .2em; color: #a0a0a6; }
+  .card h2 { font-size: 18px; }
+  .card p { font-size: 13px; color: #6d6d74; flex: 1; }
+  .sw { display: flex; gap: 6px; margin-top: 4px; }
+  .sw i { width: 26px; height: 26px; border-radius: 50%; border: 1px solid rgba(0,0,0,.08); }
+  .open { font-size: 13px; font-weight: 600; color: #9c6b1f; }
+  .note { margin-top: 30px; font-size: 13.5px; color: #8a8a90; background: #fff; border: 1px dashed #d8d8d2; border-radius: 10px; padding: 14px 16px; }
+  .note b { color: #55555c; }
+  code { background: #efefea; border-radius: 4px; padding: 1px 6px; font-size: 12.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>N5 日语学习应用 — 界面设计风格示例<small>4 款候选风格 · 相同示例内容（单词 / 语法 / 阅读 / 测验），方便公平对比 · 单文件无外部依赖，浏览器直接打开即可预览</small></h1>
+
+  <div class="grid">
+    <a class="card" href="01-washi.html">
+      <span class="num">STYLE 01</span>
+      <h2>和纸墨韵 · 传统和风</h2>
+      <p>纸感米白背景、墨色文字、朱红「印」点缀、明朝体标题。安静内敛，与日语学习天然契合的文化氛围。</p>
+      <span class="sw"><i style="background:#f6f0e1"></i><i style="background:#33302a"></i><i style="background:#a93629"></i><i style="background:#cbb992"></i></span>
+      <span class="open">打开预览 →</span>
+    </a>
+    <a class="card" href="02-ukiyoe.html">
+      <span class="num">STYLE 02</span>
+      <h2>浮世绘蓝 · 江户浪潮</h2>
+      <p>普鲁士蓝主色、浪纹分隔、朱色日轮点缀，配色大胆出挑，一眼即「日本」，记忆点极强。</p>
+      <span class="sw"><i style="background:#123c6b"></i><i style="background:#f6ecd8"></i><i style="background:#c8483a"></i><i style="background:#2c5f8a"></i></span>
+      <span class="open">打开预览 →</span>
+    </a>
+    <a class="card" href="03-editorial.html">
+      <span class="num">STYLE 03</span>
+      <h2>现代编辑 · 杂志留白</h2>
+      <p>黑白极简、大字号节奏、细分隔线与编号系统，杂志排版感。最「设计师审美」，辨识度在于克制。</p>
+      <span class="sw"><i style="background:#141414"></i><i style="background:#f6f5f1"></i><i style="background:#dd1f26"></i><i style="background:#d9d5cc"></i></span>
+      <span class="open">打开预览 →</span>
+    </a>
+    <a class="card" href="04-soft.html">
+      <span class="num">STYLE 04</span>
+      <h2>柔和治愈 · 清爽 App</h2>
+      <p>圆角卡片、柔和阴影、马卡龙色系与词性彩色标签，友好、现代、耐看的移动端学习 App 观感。</p>
+      <span class="sw"><i style="background:#2f9e8f"></i><i style="background:#e0f2ec"></i><i style="background:#ff9e7d"></i><i style="background:#e3edfa"></i></span>
+      <span class="open">打开预览 →</span>
+    </a>
+  </div>
+
+  <p class="note"><b>说明：</b>本组页面仅为<b>视觉风格评审素材</b>，不在 MVP 代码范围内；四页共用同一组示例内容与结构（含少量可交互元素：测验点击反馈、翻译开关），请重点比较观感、气质与「是否想每天打开它学习」。选定风格后，我会将其视觉规范（配色 / 字体 / 圆角 / 阴影等设计令牌）写入 <code>spec/mvp.md</code> §5，再按 M1 里程碑开始编码。<br><br><b>尚未出稿的方向</b>（如都不满意可再补充）：深色夜间玻璃拟态、像素复古（Game Boy 风）、新拟物（Neumorphism）、竖排书卷、韩系渐变糖果色等。</p>
+</div>
+</body>
+</html>
