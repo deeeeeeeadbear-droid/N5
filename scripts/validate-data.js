@@ -170,7 +170,7 @@ grammar.forEach(g => {
   checkRequired(g, g.id, ['pattern', 'group', 'meaning', 'connect']);
   if (!['助词', '动词活用', '句型'].includes(g.group)) err('[' + g.id + '] group 须为 助词/动词活用/句型：' + g.group);
   groupCount[g.group] = (groupCount[g.group] || 0) + 1;
-  checkExamples(g.examples, g.id);
+  checkExamples(g.examples, g.id, true);
 });
 if ((groupCount['助词'] || 0) < 8) err('助词组不足 8 条：当前 ' + (groupCount['助词'] || 0));
 if ((groupCount['动词活用'] || 0) < 8) err('动词活用组不足 8 条：当前 ' + (groupCount['动词活用'] || 0));
