@@ -148,7 +148,7 @@ const data = loadData();
 
 // 词库
 const words = data.words || [];
-if (words.length < 150) err('词库数量不足：' + words.length + '（要求 ≥150）');
+if (words.length < 800) err('词库数量不足：' + words.length + '（要求 ≥800，v2.0 M7）');
 const wIds = new Set();
 words.forEach(w => {
   if (!w || typeof w.id !== 'string' || !/^w\d{4}$/.test(w.id)) { err('词条 id 格式错误：' + (w && w.id)); return; }
@@ -230,7 +230,7 @@ qg.forEach(q => {
 
 /* ---------- 输出 ---------- */
 console.log('===== N5 数据完整性校验 =====');
-console.log('词库   : ' + words.length + ' 词（要求 ≥150）');
+console.log('词库   : ' + words.length + ' 词（要求 ≥800）');
 console.log('语法   : ' + grammar.length + ' 条（要求 ≥25）—— 助词 ' + (groupCount['助词'] || 0) + ' / 动词活用 ' + (groupCount['动词活用'] || 0) + ' / 句型 ' + (groupCount['句型'] || 0));
 console.log('阅读   : ' + reading.length + ' 篇（要求 ≥3）');
 console.log('语法题 : ' + qg.length + ' 题（要求 ≥12，示例题库）');
