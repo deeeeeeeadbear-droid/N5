@@ -45,12 +45,14 @@ function checkRequired(obj, id, fields) {
   }
 }
 
-function checkExamples(arr, id) {
+function checkExamples(arr, id, annotate) {
   if (!Array.isArray(arr) || arr.length === 0) { err('[' + id + '] examples 须为至少 1 条的数组'); return; }
   arr.forEach((ex, i) => {
     if (!ex || typeof ex.jp !== 'string' || !ex.jp.trim() || typeof ex.cn !== 'string' || !ex.cn.trim()) {
       err('[' + id + '] 例句[' + i + '] 须为 { jp, cn } 且均非空');
+      return;
     }
+    if (annotate && ex.jp) parseRange(id, '例句[' + i + ']', ex.jp, 0, ex.jp.length, false);
   });
 }
 
@@ -154,7 +156,7 @@ words.forEach(w => {
   checkRequired(w, w.id, ['kana', 'meaning']);
   if (!KANA_RE.test(w.kana || '')) err('[' + w.id + '] kana 须为假名：' + w.kana);
   if (typeof w.kanji === 'string' && w.kanji && !KANJI_RE.test(w.kanji)) err('[' + w.id + '] kanji 字段含非汉字内容');
-  checkExamples([w.example], w.id);
+  checkExamples([w.example], w.id, true);
 });
 
 // 语法
