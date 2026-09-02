@@ -288,3 +288,98 @@ body {
   .r-body { font-size: 18px; }
   .pop { width: min(340px, calc(100vw - 30px)); }
 }
+
+/* ==========================================================
+   M5 测验 — 答题 / 结算
+   ========================================================== */
+.quiz-card { border: 2px solid var(--ink); background: var(--card); padding: 30px 36px 34px; }
+.q-meta { display: flex; align-items: center; gap: 18px; font-size: 13px; letter-spacing: .2em; color: var(--ink2); font-weight: 800; }
+.q-meta .chip { border: 2px solid var(--ink); padding: 2px 11px; font-size: 13px; letter-spacing: .1em; color: var(--ink); }
+.q-meta .bar { flex: 1; border-top: 1px solid var(--line); }
+.q-prog { width: 180px; height: 4px; background: var(--line); flex: none; }
+.q-prog i { display: block; width: 0; height: 100%; background: var(--red); transition: width .25s ease; }
+.quiz-card h3 { font-size: 27px; font-weight: 800; margin: 20px 0 22px; letter-spacing: .02em; }
+.opts { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+.opt {
+  display: flex; align-items: center; gap: 14px; text-align: left;
+  border: 1px solid var(--line); background: none; padding: 15px 18px;
+  font-size: 18px; font-weight: 700; cursor: pointer; font-family: var(--sans); color: var(--ink);
+  transition: border-color .1s ease, background .1s ease;
+}
+.opt:hover { border-color: var(--ink); background: #faf9f5; }
+.opt:disabled { cursor: default; }
+.opt .k { font-size: 12px; color: var(--ink2); letter-spacing: .08em; width: 22px; flex: none; font-weight: 800; }
+.opt .o-sub { margin-left: auto; font-size: 13px; color: var(--ink2); font-weight: 600; white-space: nowrap; }
+.opt.on-correct { border-color: var(--green); background: #f0f7f2; }
+.opt.on-correct .k::after { content: "✓"; color: var(--green); font-size: 14px; font-weight: 800; }
+.opt.on-wrong { border-color: var(--red); background: #fdf1f0; }
+.opt.on-wrong .k::after { content: "✕"; color: var(--red); font-size: 14px; font-weight: 800; }
+
+.quiz-feedback { display: none; font-size: 15px; padding: 13px 16px; margin-top: 18px; font-weight: 700; line-height: 1.8; }
+.quiz-feedback.show { display: block; }
+.quiz-feedback .ok, .quiz-feedback .ng { display: none; }
+.quiz-feedback.is-ok .ok, .quiz-feedback.is-ng .ng { display: block; }
+.quiz-feedback.is-ok { background: #f0f7f2; color: var(--green); border-left: 4px solid var(--green); }
+.quiz-feedback.is-ng { background: #fdf1f0; color: #a3121a; border-left: 4px solid var(--red); }
+
+.q-acts { display: flex; align-items: center; gap: 14px; margin-top: 20px; flex-wrap: wrap; }
+.next {
+  border: 2px solid var(--ink); background: var(--ink); color: #fff; padding: 12px 34px;
+  font-size: 15px; letter-spacing: .24em; cursor: pointer; font-weight: 800; font-family: var(--sans);
+}
+.next:hover:not(:disabled) { background: var(--red); border-color: var(--red); }
+.next:disabled { opacity: .35; cursor: not-allowed; }
+.q-hint { font-size: 13px; color: var(--ink2); letter-spacing: .08em; }
+.q-hint2 { font-size: 13px; color: var(--red); letter-spacing: .06em; margin-top: 12px; min-height: 1.2em; }
+
+/* 结算 */
+.qz-score-row { display: flex; align-items: baseline; gap: 18px; border-bottom: 2px solid var(--ink); padding-bottom: 16px; flex-wrap: wrap; }
+.qz-score-row b { font-size: 52px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.qz-score-row span { font-size: 15px; color: var(--ink2); }
+.qz-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
+.qz-box h4 { font-size: 13px; letter-spacing: .26em; color: var(--red); font-weight: 800; margin-bottom: 6px; }
+.qz-box ul { list-style: none; border: 1px solid var(--line); }
+.qz-box li { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: baseline; padding: 8px 14px; border-bottom: 1px solid var(--line); font-size: 15px; }
+.qz-box li:last-child { border-bottom: 0; }
+.qz-box li b { font-size: 17px; }
+.qz-box li em { font-style: normal; color: var(--ink2); font-size: 12px; }
+.qz-box li span { text-align: right; color: var(--ink2); }
+.pv-none { color: var(--ink2); font-size: 14px; padding: 14px 4px; }
+
+/* ==========================================================
+   M5 进度视图
+   ========================================================== */
+.pv-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 18px; }
+.pv-card { border: 2px solid var(--ink); background: var(--card); padding: 20px 22px; }
+.pv-card b { display: block; font-size: 34px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.pv-card span { font-size: 13px; color: var(--ink2); letter-spacing: .16em; font-weight: 700; }
+.pv-cols { display: grid; grid-template-columns: 1.2fr 1fr; gap: 18px; }
+.pv-panel { border: 2px solid var(--ink); background: var(--card); padding: 18px 20px 10px; min-width: 0; }
+.pv-panel h3 { font-size: 16px; font-weight: 800; letter-spacing: .14em; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 4px; }
+.pv-panel h3 small { font-size: 12px; color: var(--ink2); font-weight: 600; letter-spacing: .05em; }
+.pv-panel ul { list-style: none; max-height: 340px; overflow-y: auto; }
+.pv-panel li { display: grid; gap: 6px; padding: 9px 4px; border-bottom: 1px solid var(--line); font-size: 14px; }
+.pv-panel li:last-child { border-bottom: 0; }
+.pv-panel li.hrow { grid-template-columns: 1fr auto auto auto; align-items: baseline; gap: 14px; }
+.h-date { color: var(--ink2); font-size: 12.5px; }
+.h-score { font-weight: 800; font-variant-numeric: tabular-nums; }
+.h-score.good { color: var(--green); }
+.h-rate { color: var(--ink2); font-variant-numeric: tabular-nums; }
+.h-wrong { color: var(--red); font-weight: 700; }
+.pv-panel li.wrow { grid-template-columns: auto 1fr auto auto; align-items: baseline; gap: 10px; cursor: pointer; }
+.pv-panel li.wrow:hover { background: var(--sel); }
+.pv-panel li.wrow b { font-size: 17px; }
+.pv-panel li.wrow em { font-style: normal; color: var(--ink2); font-size: 12px; }
+.pv-panel li.wrow span { text-align: right; color: var(--ink2); }
+.pv-panel li.wrow i { font-style: normal; color: var(--red); font-weight: 800; }
+.pv-reset-zone { display: flex; align-items: center; gap: 14px; margin-top: 22px; flex-wrap: wrap; }
+.pv-note { font-size: 12.5px; color: var(--ink2); letter-spacing: .04em; }
+.pv-confirm { font-size: 14px; font-weight: 800; color: #a3121a; display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+@media (max-width: 1225px) {
+  .opts { grid-template-columns: 1fr; }
+  .quiz-card { padding: 22px 20px 26px; }
+  .qz-cols { grid-template-columns: 1fr; }
+  .pv-grid { grid-template-columns: repeat(2, 1fr); }
+  .pv-cols { grid-template-columns: 1fr; }
+}

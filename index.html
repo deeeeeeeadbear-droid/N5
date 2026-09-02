@@ -26,6 +26,7 @@
     <a data-v="grammar" href="#view-grammar">语法<sup>02</sup></a>
     <a data-v="reading" href="#view-reading">阅读<sup>03</sup></a>
     <a data-v="quiz" href="#view-quiz">测验<sup>04</sup></a>
+    <a data-v="progress" href="#view-progress">进度<sup>05</sup></a>
   </nav>
 
   <!-- 视图区 -->
@@ -134,11 +135,86 @@
       <div class="inner narrow">
         <div class="v-head">
           <span class="tag">SECTION 04 — QUIZ 测验</span>
-          <span class="idx">M5 · 待实现</span>
+          <span class="idx">每轮 10 题 · 中↔日双向 · 即时反馈</span>
         </div>
-        <div class="ph">
-          <div class="t">测验模块 · 待实现（M5）</div>
-          <div class="d">M5 将提供：单词自测（每轮 10 题）、即时反馈与计分、错题清单沉淀<br>并与本地进度（localStorage）联动：已学标记 / 测验历史 / 错词复习</div>
+
+        <div class="quiz-card">
+          <!-- 答题面板 -->
+          <div id="qz-play">
+            <div class="q-meta">
+              <span class="chip" id="qz-dir">中 → 日</span>
+              <span id="qz-pos">QUESTION 01 / 10</span>
+              <span class="bar"></span>
+              <span class="q-prog"><i id="qz-prog"></i></span>
+            </div>
+            <h3 id="qz-q">—</h3>
+            <div class="opts" id="qz-opts"></div>
+            <div class="quiz-feedback" id="qz-fb"><span class="ok"></span><span class="ng"></span></div>
+            <div class="q-acts">
+              <button class="next" id="qz-next" type="button" disabled>下一题 →</button>
+              <span class="q-hint" id="qz-hint">作答后即时反馈 · 答错即入错题清单，答对移出</span>
+            </div>
+            <p class="q-hint2" id="qz-hint2"></p>
+          </div>
+
+          <!-- 结算面板 -->
+          <div id="qz-result" hidden>
+            <div class="qz-score-row">
+              <b id="qz-score">0 / 10</b>
+              <span id="qz-score-note"></span>
+            </div>
+            <div class="qz-cols">
+              <div class="qz-box">
+                <h4>答对回顾</h4>
+                <ul id="qz-correct-list"></ul>
+              </div>
+              <div class="qz-box">
+                <h4>本轮错题</h4>
+                <ul id="qz-wrong-list"></ul>
+              </div>
+            </div>
+            <div class="q-acts">
+              <button class="next" id="qz-again-all" type="button">再测一轮（10 题）</button>
+              <button class="btn" id="qz-again-wrong" type="button">只测错题（0）</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-progress">
+      <div class="inner">
+        <div class="v-head">
+          <span class="tag">SECTION 05 — PROGRESS 进度</span>
+          <span class="idx" id="idx-progress">本机存储</span>
+        </div>
+
+        <div class="pv-grid">
+          <div class="pv-card"><b id="pv-learned">0 / 150</b><span>已学单词</span></div>
+          <div class="pv-card"><b id="pv-rounds">0</b><span>累计测验（回）</span></div>
+          <div class="pv-card"><b id="pv-last">—</b><span>最近一次得分</span></div>
+          <div class="pv-card"><b id="pv-wrong">0</b><span>错词待复习</span></div>
+        </div>
+
+        <div class="pv-cols">
+          <div class="pv-panel">
+            <h3>测验历史</h3>
+            <ul id="pv-history"></ul>
+          </div>
+          <div class="pv-panel">
+            <h3>错题清单 <small>点击可跳转词卡复习</small></h3>
+            <ul id="pv-wronglist"></ul>
+          </div>
+        </div>
+
+        <div class="pv-reset-zone">
+          <button class="btn" id="pv-reset" type="button">重置全部进度</button>
+          <span class="pv-note">清除本机全部学习记录（已学 · 测验历史 · 错题），不可恢复</span>
+          <span class="pv-confirm" id="pv-reset-zone" hidden>
+            确认清除本机全部进度？
+            <button class="btn fill" id="pv-reset-yes" type="button">确认清除</button>
+            <button class="btn" id="pv-reset-no" type="button">取消</button>
+          </span>
         </div>
       </div>
     </section>
@@ -146,7 +222,7 @@
   </main>
 
   <footer class="foot">
-    <span>日本語 N5 — MVP 开发中（M1–M4 已完成）</span>
+    <span>日本語 N5 — MVP 功能已完成（M1–M5）</span>
     <span>PC 16:9 桌面优先 · 移动端兼容</span>
     <span class="right">SPEC v1.6 · 数据：词 150 / 语法 27 / 阅读 3</span>
   </footer>
@@ -163,6 +239,7 @@
 <script src="js/words.js"></script>
 <script src="js/grammar.js"></script>
 <script src="js/reading.js"></script>
+<script src="js/quiz.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

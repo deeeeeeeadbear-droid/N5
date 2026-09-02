@@ -1,51 +1,117 @@
 /* ==========================================================
- * N5 日语学习 MVP — 本地进度（localStorage）
- * M2：已学单词 learnedWords（键 n5app.learnedWords，spec §4.5）
- * M5 将扩展：quizHistory / wrongWords / version
- * 设计约定：localStorage 不可用时静默降级为会话内存（A20）。
+ * N5 日语学习 MVP — 本地进度（localStorage，spec §4.5）
+ * 键：
+ *   n5app.learnedWords  已学单词 id[]
+ *   n5app.quizHistory   测验记录 {date,total,correct,wrongIds[]}[]（保留最近 20 条）
+ *   n5app.wrongWords    当前错题清单 id[]
+ *   n5app.version       数据版本 "1"
+ * 设计约定：localStorage 不可用时静默降级为会话内存（A20）；
+ *          任何变更立即持久化（A17/A18）；重置清除全部 n5app.* 键（A19）。
  * ========================================================== */
 (function () {
   'use strict';
 
-  var KEY_LEARNED = 'n5app.learnedWords';
-  var memory = null; // localStorage 不可用时使用
+  var KEYS = {
+    learned: 'n5app.learnedWords',
+    quiz: 'n5app.quizHistory',
+    wrong: 'n5app.wrongWords',
+    version: 'n5app.version'
+  };
+  var MAX_HISTORY = 20;
 
+  var store = { learned: [], quiz: [], wrong: [] };
+  var degraded = false; // localStorage 不可用时为 true（仅内存）
   var listeners = [];
-  var learned = [];
 
-  function load() {
+  function readJSON(key, fallback) {
     try {
-      var raw = window.localStorage.getItem(KEY_LEARNED);
-      learned = raw ? JSON.parse(raw) : [];
-    } catch (e) {
-      learned = memory || [];
-    }
-    if (!Array.isArray(learned)) learned = [];
+      var raw = window.localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    } catch (e) { return fallback; }
   }
 
-  function save() {
+  function saveAll() {
     try {
-      window.localStorage.setItem(KEY_LEARNED, JSON.stringify(learned));
-      memory = null;
+      if (degraded) return; // 内存模式无需写
+      window.localStorage.setItem(KEYS.learned, JSON.stringify(store.learned));
+      window.localStorage.setItem(KEYS.quiz, JSON.stringify(store.quiz));
+      window.localStorage.setItem(KEYS.wrong, JSON.stringify(store.wrong));
+      window.localStorage.setItem(KEYS.version, '1');
     } catch (e) {
-      memory = learned.slice(); // 降级：仅本会话有效
+      degraded = true; // 降级：仅本会话内存
     }
+  }
+
+  function load() {
+    store.learned = readJSON(KEYS.learned, []);
+    store.quiz = readJSON(KEYS.quiz, []);
+    store.wrong = readJSON(KEYS.wrong, []);
+    store.learned = Array.isArray(store.learned) ? store.learned : [];
+    store.quiz = Array.isArray(store.quiz) ? store.quiz : [];
+    store.wrong = Array.isArray(store.wrong) ? store.wrong : [];
   }
 
   function emit() {
-    listeners.forEach(function (fn) { try { fn(learned.slice()); } catch (e) {} });
+    var snapshot = {
+      learned: store.learned.slice(),
+      quiz: store.quiz.slice(),
+      wrong: store.wrong.slice()
+    };
+    listeners.forEach(function (fn) { try { fn(snapshot); } catch (e) {} });
   }
 
+  function inArr(arr, id) { return arr.indexOf(id) >= 0; }
+
   var api = {
-    list: function () { return learned.slice(); },
-    has: function (id) { return learned.indexOf(id) >= 0; },
-    count: function () { return learned.length; },
-    add: function (id) { if (learned.indexOf(id) < 0) { learned.push(id); save(); emit(); } },
-    remove: function (id) {
-      var i = learned.indexOf(id);
-      if (i >= 0) { learned.splice(i, 1); save(); emit(); }
+    degraded: function () { return degraded; },
+
+    /* —— 已学单词 —— */
+    learnedList: function () { return store.learned.slice(); },
+    hasLearned: function (id) { return inArr(store.learned, id); },
+    learnedCount: function () { return store.learned.length; },
+    addLearned: function (id) {
+      if (!inArr(store.learned, id)) { store.learned.push(id); saveAll(); emit(); }
     },
-    toggle: function (id) { if (api.has(id)) api.remove(id); else api.add(id); },
+    removeLearned: function (id) {
+      var i = store.learned.indexOf(id);
+      if (i >= 0) { store.learned.splice(i, 1); saveAll(); emit(); }
+    },
+    toggleLearned: function (id) {
+      if (api.hasLearned(id)) api.removeLearned(id); else api.addLearned(id);
+    },
+
+    /* —— 测验历史 —— */
+    quizHistory: function () { return store.quiz.slice(); },
+    quizCount: function () { return store.quiz.length; },
+    lastQuiz: function () { return store.quiz.length ? store.quiz[store.quiz.length - 1] : null; },
+    addQuizRecord: function (rec) {
+      store.quiz.push(rec);
+      if (store.quiz.length > MAX_HISTORY) store.quiz = store.quiz.slice(-MAX_HISTORY);
+      saveAll(); emit();
+    },
+
+    /* —— 错题清单 —— */
+    wrongList: function () { return store.wrong.slice(); },
+    wrongCount: function () { return store.wrong.length; },
+    hasWrong: function (id) { return inArr(store.wrong, id); },
+    addWrong: function (id) {
+      if (!inArr(store.wrong, id)) { store.wrong.push(id); saveAll(); emit(); }
+    },
+    removeWrong: function (id) {
+      var i = store.wrong.indexOf(id);
+      if (i >= 0) { store.wrong.splice(i, 1); saveAll(); emit(); }
+    },
+
+    /* —— 重置（A19：清除全部 n5app.* 键） —— */
+    clearAll: function () {
+      store.learned = []; store.quiz = []; store.wrong = [];
+      try {
+        Object.keys(KEYS).forEach(function (k) { window.localStorage.removeItem(KEYS[k]); });
+      } catch (e) { /* 内存模式无需处理 */ }
+      saveAll();
+      emit();
+    },
+
     onChange: function (fn) { listeners.push(fn); }
   };
 

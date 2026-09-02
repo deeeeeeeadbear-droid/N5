@@ -36,7 +36,7 @@
     WORDS.forEach(function (w, i) {
       if (!matches(w, q)) return;
       shown++;
-      var learnedCls = N5Progress.has(w.id) ? ' learned' : '';
+      var learnedCls = N5Progress.hasLearned(w.id) ? ' learned' : '';
       var head = w.kanji || w.kana;
       var kanaLine = w.kanji ? '<em>' + esc(w.kana) + '</em>' : '<em>' + esc(w.kana) + '（纯假名）</em>';
       html += '<li data-i="' + i + '"' + (i === state.idx ? ' class="sel"' : '') + '>' +
@@ -51,7 +51,7 @@
     var empty = $('w-empty');
     if (empty) empty.hidden = shown > 0;
     var count = $('w-count');
-    if (count) count.textContent = q ? '命中 ' + shown + ' / ' + WORDS.length + ' 词' : '共 ' + WORDS.length + ' 词 · 已学 ' + N5Progress.count();
+    if (count) count.textContent = q ? '命中 ' + shown + ' / ' + WORDS.length + ' 词' : '共 ' + WORDS.length + ' 词 · 已学 ' + N5Progress.learnedCount();
 
     Array.prototype.forEach.call(ul.querySelectorAll('li'), function (li) {
       li.addEventListener('click', function () { pick(+li.getAttribute('data-i')); });
@@ -81,7 +81,7 @@
     var w = WORDS[state.idx];
     var btn = $('d-learn');
     if (!btn) return;
-    var learned = N5Progress.has(w.id);
+    var learned = N5Progress.hasLearned(w.id);
     btn.classList.toggle('on', learned);
     btn.textContent = learned ? '✓ 已学' : '✓ 标记为已学';
   }
@@ -89,11 +89,11 @@
   /* ---------- 头部统计联动 ---------- */
   function refreshMeta() {
     var idx = $('idx-words');
-    if (idx) idx.textContent = 'TOTAL ' + WORDS.length + ' · 已学 ' + N5Progress.count();
+    if (idx) idx.textContent = 'TOTAL ' + WORDS.length + ' · 已学 ' + N5Progress.learnedCount();
     var st = $('st-learned');
-    if (st) st.textContent = String(N5Progress.count());
+    if (st) st.textContent = String(N5Progress.learnedCount());
     var cnt = $('w-count');
-    if (cnt && !state.filter) cnt.textContent = '共 ' + WORDS.length + ' 词 · 已学 ' + N5Progress.count();
+    if (cnt && !state.filter) cnt.textContent = '共 ' + WORDS.length + ' 词 · 已学 ' + N5Progress.learnedCount();
   }
 
   /* ---------- 事件 ---------- */
@@ -108,7 +108,7 @@
     var learn = $('d-learn');
     if (learn) learn.addEventListener('click', function () {
       var w = WORDS[state.idx];
-      N5Progress.toggle(w.id);
+      N5Progress.toggleLearned(w.id);
       syncMark();
       renderRows();
       refreshMeta();
@@ -130,5 +130,15 @@
     pick(0);
   }
 
-  window.N5Words = { init: init, pick: pick, refreshMeta: refreshMeta };
+  window.N5Words = {
+    init: init,
+    pick: pick,
+    refreshMeta: refreshMeta,
+    pickById: function (id) {
+      for (var i = 0; i < WORDS.length; i++) {
+        if (WORDS[i].id === id) { pick(i); return true; }
+      }
+      return false;
+    }
+  };
 })();
