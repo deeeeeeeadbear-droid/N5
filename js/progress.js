@@ -4,6 +4,9 @@
  *   n5app.learnedWords  已学单词 id[]
  *   n5app.quizHistory   测验记录 {date,total,correct,wrongIds[]}[]（保留最近 20 条）
  *   n5app.wrongWords    当前错题清单 id[]
+ *   n5app.wrongGrammar  当前语法错题 id[]（v1.7）
+ *   n5app.reviewCards   复习卡（v3.0·B1，spec §3.9）：id → {k,st,due,last}
+ *   n5app.reviewGraduated  累计毕业卡数（v3.0·B1）
  *   n5app.version       数据版本 "1"
  * 设计约定：localStorage 不可用时静默降级为会话内存（A20）；
  *          任何变更立即持久化（A17/A18）；重置清除全部 n5app.* 键（A19）。
@@ -16,11 +19,13 @@
     quiz: 'n5app.quizHistory',
     wrong: 'n5app.wrongWords',
     wrongG: 'n5app.wrongGrammar',
+    cards: 'n5app.reviewCards',
+    grad: 'n5app.reviewGraduated',
     version: 'n5app.version'
   };
   var MAX_HISTORY = 20;
 
-  var store = { learned: [], quiz: [], wrong: [], wrongG: [] };
+  var store = { learned: [], quiz: [], wrong: [], wrongG: [], cards: {}, grad: 0 };
   var degraded = false; // localStorage 不可用时为 true（仅内存）
   var listeners = [];
 
@@ -38,6 +43,8 @@
       window.localStorage.setItem(KEYS.quiz, JSON.stringify(store.quiz));
       window.localStorage.setItem(KEYS.wrong, JSON.stringify(store.wrong));
       window.localStorage.setItem(KEYS.wrongG, JSON.stringify(store.wrongG));
+      window.localStorage.setItem(KEYS.cards, JSON.stringify(store.cards));
+      window.localStorage.setItem(KEYS.grad, String(store.grad));
       window.localStorage.setItem(KEYS.version, '1');
     } catch (e) {
       degraded = true; // 降级：仅本会话内存
@@ -53,6 +60,10 @@
     store.quiz = Array.isArray(store.quiz) ? store.quiz : [];
     store.wrong = Array.isArray(store.wrong) ? store.wrong : [];
     store.wrongG = Array.isArray(store.wrongG) ? store.wrongG : [];
+    store.cards = readJSON(KEYS.cards, {});
+    store.grad = readJSON(KEYS.grad, 0);
+    if (typeof store.cards !== 'object' || store.cards === null || Array.isArray(store.cards)) store.cards = {};
+    if (typeof store.grad !== 'number' || isNaN(store.grad)) store.grad = 0;
   }
 
   function emit() {
@@ -60,7 +71,9 @@
       learned: store.learned.slice(),
       quiz: store.quiz.slice(),
       wrong: store.wrong.slice(),
-      wrongG: store.wrongG.slice()
+      wrongG: store.wrongG.slice(),
+      cards: Object.assign({}, store.cards),
+      grad: store.grad
     };
     listeners.forEach(function (fn) { try { fn(snapshot); } catch (e) {} });
   }
@@ -119,9 +132,20 @@
       if (i >= 0) { store.wrongG.splice(i, 1); saveAll(); emit(); }
     },
 
+    /* —— 复习卡（v3.0·B1，spec §3.9） —— */
+    reviewGet: function (id) { return store.cards[id] || null; },
+    reviewAll: function () { return Object.assign({}, store.cards); },
+    reviewSet: function (id, rec) { store.cards[id] = rec; saveAll(); emit(); },
+    reviewRemove: function (id) {
+      if (store.cards[id]) { delete store.cards[id]; saveAll(); emit(); }
+    },
+    reviewGrad: function () { return store.grad; },
+    reviewGradAdd: function (n) { store.grad += n; saveAll(); emit(); },
+
     /* —— 重置（A19：清除全部 n5app.* 键） —— */
     clearAll: function () {
       store.learned = []; store.quiz = []; store.wrong = []; store.wrongG = [];
+      store.cards = {}; store.grad = 0;
       try {
         Object.keys(KEYS).forEach(function (k) { window.localStorage.removeItem(KEYS[k]); });
       } catch (e) { /* 内存模式无需处理 */ }

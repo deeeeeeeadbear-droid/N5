@@ -222,6 +222,10 @@
         P.addGrammarWrong(q.id);
       }
     }
+    // v3.0·B1 SRS：作答结果同步复习卡（答错建档/重置为 0 档，答对升级已有卡，spec §3.9）
+    if (window.N5Review) {
+      try { window.N5Review.onQuizResult(q.kind, q.id, right); } catch (e) { console.error(e); }
+    }
     $('qz-next').disabled = false;
   }
 

@@ -43,13 +43,13 @@ const dupIds = [];
 });
 check(dupIds.length === 0, dupIds.length ? 'HTML 重复 id: ' + dupIds.join(',') : 'HTML 无重复 id');
 
-const jsFiles = ['app.js', 'words.js', 'grammar.js', 'reading.js', 'quiz.js', 'annotate.js', 'progress.js'];
+const jsFiles = ['app.js', 'words.js', 'grammar.js', 'reading.js', 'quiz.js', 'review.js', 'annotate.js', 'progress.js'];
 let refIds = new Set();
 jsFiles.forEach(f => {
   const p = path.join(ROOT, 'js', f);
   if (!fs.existsSync(p)) { check(false, '缺失 js/' + f); return; }
   const code = fs.readFileSync(p, 'utf8');
-  const re = /\$(\(['"])([^'"]+)\1\)|getElementById\((['"])([^'"]+)\3\)/g;
+  const re = /\$\((['"])([^'"]+)\1\)|getElementById\((['"])([^'"]+)\3\)/g;
   let m;
   while ((m = re.exec(code)) !== null) refIds.add(m[2] || m[4]);
 });
@@ -63,18 +63,18 @@ check(missViews.length === 0, missViews.length ? '导航缺少对应视图: ' + 
 
 /* 4) 脚本顺序（依赖在前） */
 const scriptOrder = ['data/words.js', 'data/grammar.js', 'data/reading.js', 'data/quiz-grammar.js',
-  'js/annotate.js', 'js/progress.js', 'js/words.js', 'js/grammar.js', 'js/reading.js', 'js/quiz.js', 'js/app.js'];
+  'js/annotate.js', 'js/progress.js', 'js/words.js', 'js/grammar.js', 'js/reading.js', 'js/quiz.js', 'js/review.js', 'js/app.js'];
 const pos = scriptOrder.map(x => HTML.indexOf('src="' + x + '"'));
 const badOrder = scriptOrder.filter((x, i) => pos[i] < 0);
 const sorted = pos.slice().sort((a, b) => a - b);
-check(badOrder.length === 0, badOrder.length ? '脚本缺失: ' + badOrder.join(',') : '11 个脚本引用齐全');
+check(badOrder.length === 0, badOrder.length ? '脚本缺失: ' + badOrder.join(',') : '12 个脚本引用齐全');
 check(pos.join(',') === sorted.join(','), '脚本按依赖顺序加载');
 
 /* 5) 基础结构 */
 check(/^\s*<!DOCTYPE html>/i.test(HTML), 'DOCTYPE 位于文件首');
 check(HTML.includes('<meta charset="UTF-8">'), 'UTF-8 元信息存在');
 const dataV = (HTML.match(/data-v="[^"]+"/g) || []).length;
-check(dataV === 5, '导航含 5 个模块（当前 ' + dataV + '）');
+check(dataV === 6, '导航含 6 个模块（当前 ' + dataV + '）');
 
 console.log('-----------------------------');
 if (fails === 0) { console.log('✓ 静态审计通过，零问题'); process.exit(0); }

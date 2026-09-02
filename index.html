@@ -27,6 +27,7 @@
     <a data-v="reading" href="#view-reading">阅读<sup>03</sup></a>
     <a data-v="quiz" href="#view-quiz">测验<sup>04</sup></a>
     <a data-v="progress" href="#view-progress">进度<sup>05</sup></a>
+    <a data-v="review" href="#view-review">复习<sup>06</sup></a>
   </nav>
 
   <!-- 视图区 -->
@@ -227,12 +228,44 @@
 
         <div class="pv-reset-zone">
           <button class="btn" id="pv-reset" type="button">重置全部进度</button>
-          <span class="pv-note">清除本机全部学习记录（已学 · 测验历史 · 错题），不可恢复</span>
+          <span class="pv-note">清除本机全部学习记录（已学 · 测验历史 · 错题 · 复习卡），不可恢复</span>
           <span class="pv-confirm" id="pv-reset-zone" hidden>
             确认清除本机全部进度？
             <button class="btn fill" id="pv-reset-yes" type="button">确认清除</button>
             <button class="btn" id="pv-reset-no" type="button">取消</button>
           </span>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-review">
+      <div class="inner narrow">
+        <div class="v-head">
+          <span class="tag">SECTION 06 — REVIEW 复习</span>
+          <span class="idx" id="idx-review">—</span>
+        </div>
+
+        <div class="pv-grid rv-grid">
+          <div class="pv-card"><b id="rv-due">0</b><span>今日到期</span></div>
+          <div class="pv-card"><b id="rv-active">0</b><span>学习中（张）</span></div>
+          <div class="pv-card"><b id="rv-grad">0</b><span>累计毕业</span></div>
+          <div class="pv-card"><b id="rv-wrong">0</b><span>错题待处理</span></div>
+        </div>
+
+        <div class="rv-zone">
+          <p class="rv-msg" id="rv-msg"></p>
+          <ul class="rv-list" id="rv-list"></ul>
+          <div class="rv-state" id="rv-empty" hidden>
+            <p class="t">还没有复习卡</p>
+            <p class="d">测验中答错的单词 / 语法题会自动建档成复习卡，并按间隔表提醒你复习 —— 先去做一轮测验吧。</p>
+            <button class="btn fill" id="rv-go-quiz" type="button">去测验</button>
+          </div>
+          <div class="rv-state" id="rv-none" hidden>
+            <p class="t">今日到期已清空 🎉</p>
+            <p class="d" id="rv-none-d"></p>
+            <button class="btn fill" id="rv-go-quiz2" type="button">去测验巩固</button>
+          </div>
+          <p class="rv-tip">自评规则：记得 → 连续次数 +1、间隔按 1/2/4/7/15 天拉长，第 6 次记得毕业（自动移出错题清单）；模糊 → 明天再来（次数不变）；忘了 → 归零，明天再来。测验中答错会自动重置卡片为今天到期。</p>
         </div>
       </div>
     </section>
@@ -259,6 +292,7 @@
 <script src="js/grammar.js"></script>
 <script src="js/reading.js"></script>
 <script src="js/quiz.js"></script>
+<script src="js/review.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

@@ -411,3 +411,43 @@ body {
   .pv-cols { grid-template-columns: 1fr; }
   .menu-grid { grid-template-columns: 1fr; }
 }
+
+/* ===== v3.0·B1 复习视图（spec §3.9） ===== */
+.rv-zone { border: 2px solid var(--ink); background: var(--card); padding: 18px 22px 20px; }
+.rv-msg { min-height: 1.7em; font-size: 14px; font-weight: 700; color: var(--ink); letter-spacing: .04em; margin: 0 0 8px; line-height: 1.7; }
+.rv-list { list-style: none; display: flex; flex-direction: column; gap: 16px; }
+.rv-card { border: 2px solid var(--ink); }
+.rv-card-head { display: flex; align-items: center; gap: 12px; padding: 8px 16px; border-bottom: 1px solid var(--line); background: #fbfaf7; }
+.rv-k { font-size: 12px; letter-spacing: .1em; font-weight: 800; padding: 1px 10px; border-radius: 3px; flex: none; }
+.rv-k.w { color: #173a60; background: #e4edf5; }
+.rv-k.g { color: #7c2d20; background: #f6e2dc; }
+.rv-no { font-size: 12px; color: #aaa79c; font-variant-numeric: tabular-nums; letter-spacing: .04em; }
+.rv-st { margin-left: auto; font-size: 12px; color: var(--ink2); letter-spacing: .08em; font-variant-numeric: tabular-nums; }
+.rv-face { padding: 16px 22px 4px; }
+.rv-face .q { font-size: 23px; font-weight: 800; line-height: 1.9; letter-spacing: .02em; }
+.rv-face .sub { font-size: 12.5px; color: var(--ink2); margin-top: 4px; letter-spacing: .04em; }
+.rv-ans { display: none; margin: 12px 22px 0; padding-top: 10px; border-top: 1px dashed var(--line); }
+.rv-card.revealed .rv-ans { display: block; }
+.rv-ans .lab { font-size: 12px; letter-spacing: .26em; margin-bottom: 2px; }
+.rv-ans .a-main { font-size: 25px; font-weight: 800; line-height: 1.9; }
+.rv-ans .a-main ruby rt { font-size: 12px; color: var(--ink2); font-weight: 400; }
+.rv-ans .a-me { font-size: 14.5px; color: var(--ink2); line-height: 1.9; margin-top: 4px; }
+.rv-acts { display: flex; align-items: center; gap: 12px; padding: 12px 22px 16px; flex-wrap: wrap; }
+.rv-grades { display: none; gap: 10px; flex-wrap: wrap; }
+.rv-card.revealed .rv-grades { display: inline-flex; }
+.rv-card.revealed .rv-reveal { display: none; }
+.rv-g { padding: 8px 18px; font-size: 15px; letter-spacing: .06em; }
+.g-ok { background: var(--green); border-color: var(--green); color: #fff; }
+.g-ok:hover { background: var(--green); color: #fff; filter: brightness(1.08); }
+.g-mid { background: var(--ink); border-color: var(--ink); color: #fff; }
+.g-no { background: #fff; border-color: var(--red); color: var(--red); }
+.g-no:hover { background: var(--red); color: #fff; }
+.rv-state { text-align: center; padding: 46px 18px 32px; }
+.rv-state .t { font-size: 20px; font-weight: 800; letter-spacing: .1em; margin-bottom: 10px; }
+.rv-state .d { font-size: 14px; color: var(--ink2); line-height: 1.9; margin: 0 auto 20px; max-width: 560px; }
+.rv-tip { margin: 12px 2px 0; font-size: 12px; color: #a29f94; letter-spacing: .05em; line-height: 1.9; }
+@media (max-width: 700px) {
+  .rv-grid { grid-template-columns: repeat(2, 1fr); }
+  .rv-face .q { font-size: 19px; }
+  .rv-ans .a-main { font-size: 20px; }
+}

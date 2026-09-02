@@ -44,8 +44,8 @@
 
   window.N5App = { go: switchTo };
 
-  /* 刷新后按锚点恢复模块（#view-words … #view-progress） */
-  var m = (location.hash || '').match(/^#view-(words|grammar|reading|quiz|progress)$/);
+  /* 刷新后按锚点恢复模块（#view-words … #view-review） */
+  var m = (location.hash || '').match(/^#view-(words|grammar|reading|quiz|progress|review)$/);
   if (m) switchTo(m[1]);
 
   /* ---- 各模块初始化（M2 单词 · M3 语法 · M4 阅读 · M5 测验/进度） ---- */
@@ -53,4 +53,5 @@
   if (window.N5Grammar && document.getElementById('view-grammar')) N5Grammar.init();
   if (window.N5Reading && document.getElementById('view-reading')) N5Reading.init();
   if (window.N5Quiz && document.getElementById('view-quiz')) N5Quiz.init();
+  if (window.N5Review && document.getElementById('view-review')) N5Review.init();
 })();
