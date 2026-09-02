@@ -16,7 +16,7 @@
     <span class="stats">
       <span><b id="st-learned">0</b>已学单词</span>
       <span><b id="st-quiz">0</b>测验次数</span>
-      <span><b id="st-wrong">0</b>错词待复习</span>
+      <span><b id="st-wrong">0</b>错题待复习</span>
     </span>
   </header>
 
@@ -116,6 +116,7 @@
             <p class="r-legend">※ 红色下划线为生词，点击可查看释义</p>
             <div class="r-acts">
               <button class="tr-toggle" id="r-tr-toggle" type="button">显示翻译</button>
+              <button class="btn" id="r-done" type="button">✓ 标记已读</button>
               <button class="btn ghost" id="r-prev" type="button">‹ 上一篇</button>
               <button class="btn ghost" id="r-next" type="button">下一篇 ›</button>
             </div>
@@ -234,10 +235,37 @@
         </div>
 
         <div class="pv-grid">
-          <div class="pv-card"><b id="pv-learned">0 / 150</b><span>已学单词</span></div>
+          <div class="pv-card"><b id="pv-learned">0 / 800</b><span>已学单词</span></div>
           <div class="pv-card"><b id="pv-rounds">0</b><span>累计测验（回）</span></div>
           <div class="pv-card"><b id="pv-last">—</b><span>最近一次得分</span></div>
-          <div class="pv-card"><b id="pv-wrong">0</b><span>错词待复习</span></div>
+          <div class="pv-card"><b id="pv-wrong">0</b><span>错题待复习</span></div>
+        </div>
+
+        <div class="pv-panel sv-panel">
+          <h3>掌握率统计 <small>随测验 / 复习 / 阅读自动更新</small></h3>
+          <div class="sv-grid">
+            <div class="sv-block">
+              <div class="sv-title"><span>单词掌握（手动标记已学）</span><b id="sv-word-pct">0%</b><em id="sv-word-n">0 / 800</em></div>
+              <div class="sv-bar"><i id="sv-word-bar"></i></div>
+              <ul class="sv-rows" id="sv-word-pos"></ul>
+            </div>
+            <div class="sv-block">
+              <div class="sv-title"><span>阅读进度（已读篇目）</span><b id="sv-read-pct">0%</b><em id="sv-read-n">0 / 40</em></div>
+              <div class="sv-bar"><i id="sv-read-bar"></i></div>
+              <p class="sv-note">在「阅读」模块把每篇标记为已读，阅读全文后养成标记习惯。</p>
+            </div>
+            <div class="sv-block">
+              <div class="sv-title"><span>复习毕业（SRS）</span><b id="sv-grad-pct">0%</b><em id="sv-grad-n">0 / 0</em></div>
+              <div class="sv-bar"><i id="sv-grad-bar"></i></div>
+              <p class="sv-note" id="sv-grad-tip">累计毕业 ÷（毕业＋学习中）· 今日到期 <b id="sv-grad-due">0</b> 张</p>
+            </div>
+            <div class="sv-block">
+              <div class="sv-title"><span>语法自测（近 20 轮作答覆盖）</span><b id="sv-gq-pct">0%</b><em id="sv-gq-n">0 / 60</em></div>
+              <div class="sv-bar"><i id="sv-gq-bar"></i></div>
+              <p class="sv-note">历史均分：单词 <b id="sv-avg-w">—</b> · 语法 <b id="sv-avg-g">—</b>　当前语法错题分布：</p>
+              <div class="sv-chips" id="sv-gq-chips"></div>
+            </div>
+          </div>
         </div>
 
         <div class="pv-cols">
@@ -246,7 +274,7 @@
             <ul id="pv-history"></ul>
           </div>
           <div class="pv-panel">
-            <h3>错题清单 <small>点击可跳转词卡复习</small></h3>
+            <h3>错题清单 <small>词可点击跳词卡 · 语为语法错题（含解析）</small></h3>
             <ul id="pv-wronglist"></ul>
           </div>
         </div>
@@ -318,6 +346,7 @@
 <script src="js/reading.js"></script>
 <script src="js/quiz.js"></script>
 <script src="js/review.js"></script>
+<script src="js/stats.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

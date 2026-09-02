@@ -9,6 +9,7 @@
 
   var DATA = window.N5_DATA;
   var PASS = (DATA && DATA.reading) || [];
+  var P = window.N5Progress;
   if (!PASS.length) { console.error('[N5] 阅读模块：数据为空'); return; }
 
   var state = { idx: 0, hit: -1 };
@@ -46,10 +47,8 @@
     $('r-cn').classList.remove('open');
     var tg = $('r-tr-toggle');
     if (tg) tg.textContent = '显示翻译';
-    $('r-count').textContent = 'PASSAGE ' + (state.idx + 1) + ' / ' + PASS.length + ' · ' + p.title;
     $('r-desc').textContent = '第 ' + (state.idx + 1) + ' 篇 · 汉字注音：完整 · 生词 ' + p.gloss.length + ' 个';
-    var idx = $('idx-reading');
-    if (idx) idx.textContent = 'PASSAGE ' + (state.idx + 1) + ' / ' + PASS.length + ' · ' + p.title;
+    syncDoneUI(); // 已读状态（v3.0·B3）
 
     // 生词栏
     var ul = $('r-gloss');
@@ -69,6 +68,36 @@
     }
     state.hit = -1;
     closePop();
+  }
+
+  /* ---------- 已读标记（v3.0·B3，spec §3.10） ---------- */
+  function isDone() {
+    var p = PASS[state.idx];
+    return !!(P && p && P.hasReadDone(p.id));
+  }
+  function syncDoneUI() {
+    var p = PASS[state.idx];
+    if (!p) return;
+    var done = isDone();
+    var cnt = $('r-count');
+    if (cnt) cnt.textContent = 'PASSAGE ' + (state.idx + 1) + ' / ' + PASS.length + (done ? ' · 已读 ✓' : ' · 未读') + ' · ' + p.title;
+    var idx = $('idx-reading');
+    if (idx) idx.textContent = 'PASSAGE ' + (state.idx + 1) + ' / ' + PASS.length + (done ? ' · 已读' : '') + ' · ' + p.title;
+    var b = $('r-done');
+    if (b) {
+      b.classList.toggle('on', done);
+      b.textContent = done ? '已读 ✓ · 点击取消' : '✓ 标记已读';
+    }
+  }
+  function bindDone() {
+    var b = $('r-done');
+    if (!b || !P) return;
+    b.addEventListener('click', function () {
+      var p = PASS[state.idx];
+      if (!p) return;
+      P.toggleReadDone(p.id); // onChange 会联动进度掌握率
+      syncDoneUI();
+    });
   }
 
   /* ---------- 高亮联动 ---------- */
@@ -192,7 +221,9 @@
     if (!$('view-reading')) return;
     bindToggles();
     bindNav();
+    bindDone();
     bindGlobal();
+    if (P) P.onChange(function () { syncDoneUI(); }); // 外部变更（如重置）后同步当前篇目标记
     renderPassage();
   }
 

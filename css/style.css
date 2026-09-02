@@ -468,3 +468,34 @@ body {
   .set-row { gap: 8px; }
   .set-lab { width: 100%; }
 }
+
+/* ===== v3.0·B3 掌握率统计面板（spec §3.10） ===== */
+.sv-panel { margin-bottom: 18px; }
+.sv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; padding: 6px 2px 4px; }
+.sv-block { min-width: 0; }
+.sv-title { display: flex; align-items: baseline; gap: 10px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-bottom: 8px; }
+.sv-title span { font-size: 14px; font-weight: 800; letter-spacing: .1em; }
+.sv-title b { margin-left: auto; font-size: 18px; font-weight: 800; color: var(--red); font-variant-numeric: tabular-nums; }
+.sv-title em { font-style: normal; font-size: 12px; color: var(--ink2); font-variant-numeric: tabular-nums; }
+.sv-bar { height: 7px; background: var(--line); margin: 4px 0 8px; }
+.sv-bar i { display: block; height: 100%; background: var(--red); transition: width .25s ease; }
+.sv-note { font-size: 12px; color: var(--ink2); line-height: 1.8; letter-spacing: .03em; margin: 4px 0 6px; }
+.sv-note b { color: var(--red); }
+.sv-rows { list-style: none; max-height: 210px; overflow-y: auto; margin: 2px 0 0; }
+.sv-rows li { display: grid; grid-template-columns: 76px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 4px 0; border-bottom: 1px dashed var(--line); font-size: 12.5px; }
+.sv-rows li:last-child { border-bottom: 0; }
+.sv-rows .p { font-weight: 700; color: var(--ink); letter-spacing: .05em; }
+.sv-rows .t { height: 6px; background: var(--line); min-width: 40px; }
+.sv-rows .t i { display: block; height: 100%; background: var(--red); }
+.sv-rows .n { color: var(--ink2); font-variant-numeric: tabular-nums; }
+.sv-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.sv-chip { font-style: normal; border: 1px solid var(--line); padding: 2px 10px; font-size: 12px; color: var(--ink2); font-weight: 700; letter-spacing: .06em; }
+.sv-chip b { color: var(--red); font-variant-numeric: tabular-nums; margin-left: 2px; }
+.sv-chip.none { border-style: dashed; color: #a29f94; }
+.pv-panel li.wrow .gmark { font-size: 12px; background: #f6e2dc; color: #7c2d20; padding: 0 8px; border-radius: 3px; font-weight: 800; line-height: 1.8; }
+.pv-panel li.wrow.grow { cursor: default; }
+.pv-panel li.wrow.grow:hover { background: transparent; }
+.pv-panel li.wrow span { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 46%; }
+@media (max-width: 900px) {
+  .sv-grid { grid-template-columns: 1fr; }
+}

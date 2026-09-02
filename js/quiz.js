@@ -316,7 +316,12 @@
     var correct = round.answers.filter(Boolean).length;
     var wrongIds = [];
     round.items.forEach(function (q, i) { if (!round.answers[i]) wrongIds.push(q.id); });
-    P.addQuizRecord({ type: round.type, date: nowStr(), total: total, correct: correct, wrongIds: wrongIds });
+    // v3.0·B3：记录 seen（该轮全部作答题 id），供掌握率统计（spec §3.10/A39）
+    P.addQuizRecord({
+      type: round.type, date: nowStr(), total: total, correct: correct,
+      wrongIds: wrongIds,
+      seen: round.items.map(function (q) { return q.id; })
+    });
     renderResult(total, correct, wrongIds);
   }
 
@@ -379,7 +384,7 @@
     $('pv-learned').textContent = P.learnedCount() + ' / ' + WORDS.length;
     $('pv-rounds').textContent = history.length;
     $('pv-last').textContent = last ? last.correct + '/' + last.total : '—';
-    $('pv-wrong').textContent = P.wrongCount();
+    $('pv-wrong').textContent = String(P.wrongCount() + P.grammarWrongCount()); // 词 + 语法错题（v3.0·B3）
 
     var hl = $('pv-history');
     if (!history.length) {
@@ -402,8 +407,9 @@
 
     var wl = $('pv-wronglist');
     var wrong = P.wrongList();
-    if (!wrong.length) {
-      wl.innerHTML = '<p class="pv-none">暂无错词，继续保持！</p>';
+    var wrongG = P.grammarWrongList();
+    if (!wrong.length && !wrongG.length) {
+      wl.innerHTML = '<p class="pv-none">暂无错题，继续保持！</p>';
     } else {
       wl.innerHTML = '';
       wrong.forEach(function (id) {
@@ -417,6 +423,14 @@
         });
         wl.appendChild(li);
       });
+      wrongG.forEach(function (id) {
+        var gq = byGQ(id);
+        if (!gq) return;
+        var li = document.createElement('li');
+        li.className = 'wrow grow';
+        li.innerHTML = '<b class="gmark">语</b><em>' + esc(gq.options[gq.answer]) + '</em><span>' + esc(gq.hint) + '</span>';
+        wl.appendChild(li);
+      });
     }
     refreshStats();
   }
@@ -425,7 +439,7 @@
     var el;
     el = $('st-learned'); if (el) el.textContent = String(P.learnedCount());
     el = $('st-quiz'); if (el) el.textContent = String(P.quizCount());
-    el = $('st-wrong'); if (el) el.textContent = String(P.wrongCount());
+    el = $('st-wrong'); if (el) el.textContent = String(P.wrongCount() + P.grammarWrongCount());
     var idx = $('idx-progress');
     if (idx) idx.textContent = '本机存储 · 已学 ' + P.learnedCount() + ' · 测验 ' + P.quizCount() + ' 回';
   }
