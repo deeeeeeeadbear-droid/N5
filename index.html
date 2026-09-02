@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>日本語 N5. — 单词・语法・阅读・测验</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="sheet">
+  <!-- 报头 -->
+  <header class="masthead">
+    <span class="brand">日本語 N5<span class="dot">.</span></span>
+    <span class="vol">Language Notebook — 学习手帐</span>
+    <span class="stats">
+      <span><b id="st-learned">0</b>已学单词</span>
+      <span><b id="st-quiz">0</b>测验次数</span>
+      <span><b id="st-wrong">0</b>错词待复习</span>
+    </span>
+  </header>
+
+  <!-- 模块导航 -->
+  <nav class="nav" aria-label="模块导航">
+    <a class="cur" data-v="words" href="#view-words">单词<sup>01</sup></a>
+    <a data-v="grammar" href="#view-grammar">语法<sup>02</sup></a>
+    <a data-v="reading" href="#view-reading">阅读<sup>03</sup></a>
+    <a data-v="quiz" href="#view-quiz">测验<sup>04</sup></a>
+  </nav>
+
+  <!-- 视图区 -->
+  <main class="area">
+
+    <section class="view active" id="view-words">
+      <div class="inner">
+        <div class="v-head">
+          <span class="tag">SECTION 01 — WORDS 单词</span>
+          <span class="idx" id="idx-words">—</span>
+        </div>
+        <div class="ph">
+          <div class="t">单词模块 · 待实现（M2）</div>
+          <div class="d">词库数据已就绪：<i>150 词</i> 已载入并通过校验<br>M2 将提供：列表浏览（编号 / 假名 / 词性 / 释义）、即时搜索、词卡详情、标记已学</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-grammar">
+      <div class="inner">
+        <div class="v-head">
+          <span class="tag">SECTION 02 — GRAMMAR 语法</span>
+          <span class="idx" id="idx-grammar">—</span>
+        </div>
+        <div class="ph">
+          <div class="t">语法模块 · 待实现（M3）</div>
+          <div class="d">语法数据已就绪：<i>27 条</i>（助词 10 / 动词活用 8 / 句型 9）<br>M3 将提供：分组列表（句型・接续・例句・注意）与详情讲解</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-reading">
+      <div class="inner">
+        <div class="v-head">
+          <span class="tag">SECTION 03 — READING 阅读</span>
+          <span class="idx" id="idx-reading">—</span>
+        </div>
+        <div class="ph">
+          <div class="t">阅读模块 · 待实现（M4）</div>
+          <div class="d">阅读数据已就绪：<i>3 篇</i> 注音短文（汉字注音 100% 校验通过）<br>M4 将提供：全文假名注音、生词高亮点击查义、中文翻译开关</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-quiz">
+      <div class="inner narrow">
+        <div class="v-head">
+          <span class="tag">SECTION 04 — QUIZ 测验</span>
+          <span class="idx">M5 · 待实现</span>
+        </div>
+        <div class="ph">
+          <div class="t">测验模块 · 待实现（M5）</div>
+          <div class="d">M5 将提供：单词自测（每轮 10 题）、即时反馈与计分、错题清单沉淀<br>并与本地进度（localStorage）联动：已学标记 / 测验历史 / 错词复习</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="foot">
+    <span>日本語 N5 — MVP 骨架（M1）</span>
+    <span>PC 16:9 桌面优先 · 移动端兼容</span>
+    <span class="right">SPEC v1.4 · 数据：词 150 / 语法 27 / 阅读 3</span>
+  </footer>
+</div>
+
+<!-- 数据（纯静态，file:// 亦可直开） -->
+<script src="data/words.js"></script>
+<script src="data/grammar.js"></script>
+<script src="data/reading.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
