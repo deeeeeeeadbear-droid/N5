@@ -37,9 +37,38 @@
           <span class="tag">SECTION 01 — WORDS 单词</span>
           <span class="idx" id="idx-words">—</span>
         </div>
-        <div class="ph">
-          <div class="t">单词模块 · 待实现（M2）</div>
-          <div class="d">词库数据已就绪：<i>150 词</i> 已载入并通过校验<br>M2 将提供：列表浏览（编号 / 假名 / 词性 / 释义）、即时搜索、词卡详情、标记已学</div>
+
+        <div class="wbar">
+          <div class="search"><input id="w-search" type="search" placeholder="汉字 / 假名 / 中文释义 / 词性 …" autocomplete="off"></div>
+          <span class="w-count" id="w-count">共 150 词 · 已学 0</span>
+        </div>
+
+        <div class="split">
+          <div class="col-list">
+            <ul id="w-rows"></ul>
+            <div class="col-empty" id="w-empty" hidden>
+              <p class="t">没有匹配的词条</p>
+              <p class="d">换个关键词试试（支持 汉字・假名・释义・词性）</p>
+            </div>
+          </div>
+
+          <div class="col-detail">
+            <div class="d-meta"><span id="d-no">WORD NO.001 / 150</span><span class="bar"></span><span id="d-pos">代词</span></div>
+            <div class="d-hero">
+              <span class="d-kana" id="d-kana">—</span>
+              <span class="d-kanji" id="d-kanji"></span>
+              <span class="d-me" id="d-me">—</span>
+            </div>
+            <div class="d-hero-note" id="d-note"></div>
+            <hr class="d-sep">
+            <div class="lab">例文 EXAMPLE</div>
+            <div class="ex"><b id="d-ex"></b><span id="d-excn"></span></div>
+            <div class="dacts">
+              <button class="btn fill" id="d-learn" type="button">✓ 标记为已学</button>
+              <button class="btn" id="d-prev" type="button">‹ 上一词</button>
+              <button class="btn" id="d-next" type="button">下一词 ›</button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -96,6 +125,11 @@
 <script src="data/words.js"></script>
 <script src="data/grammar.js"></script>
 <script src="data/reading.js"></script>
+<!-- 共享工具 -->
+<script src="js/annotate.js"></script>
+<script src="js/progress.js"></script>
+<!-- 模块（按里程碑渐进实现） -->
+<script src="js/words.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
