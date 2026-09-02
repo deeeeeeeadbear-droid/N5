@@ -1,6 +1,6 @@
 # 日本語 N5 — 学习手帐（正式版 v2.0）
 
-纯前端静态的 **JLPT N5 日语学习应用**：单词（800 词全量词库）、语法（74 条 N5 考点分组讲解）、阅读（10 篇全文注音短文）、自测（单词双向题 + 语法题库 60 题，覆盖全部句型/活用考点）、本地进度记录。黑白杂志编辑风，面向 Windows PC 16:9 桌面，移动端较好兼容。
+纯前端静态的 **JLPT N5 日语学习应用**：单词（800 词全量词库）、语法（74 条 N5 考点分组讲解）、阅读（40 篇全文注音短文，词库入文覆盖 ~80%）、自测（单词双向题 + 语法题库 60 题，覆盖全部句型/活用考点）、本地进度记录。黑白杂志编辑风，面向 Windows PC 16:9 桌面，移动端较好兼容。
 
 > 规格文档：`spec/mvp.md`（Spec 驱动开发，版本 v2.0）；工作规范：`AGENTS.md`。
 
@@ -24,7 +24,7 @@ js/reading.js           M4 阅读模块    js/quiz.js       M5 测验与进度
 js/annotate.js          注音标记 → <ruby> 渲染
 js/progress.js          localStorage 进度（已学/测验历史/错词/语法错题）
 data/words.js           词库 800 词      data/grammar.js  语法 74 条（助词 22/活用 16/句型 36）
-data/reading.js         阅读 10 篇        data/quiz-grammar.js 语法题库 60 题（gid 全覆盖）
+data/reading.js         阅读 40 篇        data/quiz-grammar.js 语法题库 60 题（gid 全覆盖）
 scripts/validate-data.js 数据完整性校验（提交前必跑；规模阈值 800/70/10/60 + 题型覆盖校验）
 scripts/audit-app.js     应用静态审计（元素引用/资源/结构）
 spec/mvp.md             v2.0 规格（功能 + 验收 A1–A28）
