@@ -136,26 +136,50 @@
       <div class="inner narrow">
         <div class="v-head">
           <span class="tag">SECTION 04 — QUIZ 测验</span>
-          <span class="idx">每轮 10 题 · 中↔日双向 · 即时反馈</span>
+          <span class="idx" id="idx-quiz">每轮 10 题 · 中↔日双向 · 即时反馈</span>
         </div>
 
         <div class="quiz-card">
           <!-- 类型选择 -->
           <div class="qz-menu" id="qz-menu">
             <div class="menu-t">选择测验类型</div>
+            <div class="qz-set">
+              <div class="set-row">
+                <span class="set-lab">每轮题数</span>
+                <span class="set-seg" id="qz-set-count">
+                  <button type="button" data-v="5">5</button>
+                  <button type="button" data-v="10">10</button>
+                  <button type="button" data-v="15">15</button>
+                  <button type="button" data-v="20">20</button>
+                  <button type="button" data-v="0">全部</button>
+                </span>
+                <span class="set-lab">范围</span>
+                <span class="set-seg" id="qz-set-scope">
+                  <button type="button" data-v="all">全部</button>
+                  <button type="button" data-v="wrong">错题专测</button>
+                </span>
+                <span class="set-lab">计时（每题）</span>
+                <span class="set-seg" id="qz-set-timer">
+                  <button type="button" data-v="0">不限</button>
+                  <button type="button" data-v="20">20 秒</button>
+                  <button type="button" data-v="30">30 秒</button>
+                  <button type="button" data-v="45">45 秒</button>
+                </span>
+              </div>
+              <p class="set-note">设置自动保存于本机（刷新后保持）；「错题专测」为空时自动回退全库并提示。单词 / 语法共用同一套设置。</p>
+            </div>
             <div class="menu-grid">
               <button class="menu-card" id="qz-m-word" type="button">
                 <b>单词测验</b>
-                <span>10 题 · 中↔日双向 · 即时反馈</span>
+                <span id="qz-m-word-d">10 题 · 中↔日双向 · 即时反馈</span>
                 <i>单词错词 <em id="qz-m-word-n">0</em> 个</i>
               </button>
               <button class="menu-card" id="qz-m-grammar" type="button">
                 <b>语法测验</b>
-                <span>10 题 · 填空选择 · 附解析（示例题库）</span>
+                <span id="qz-m-grammar-d">10 题 · 填空选择 · 附解析（示例题库）</span>
                 <i>语法错题 <em id="qz-m-grammar-n">0</em> 个</i>
               </button>
             </div>
-            <p class="menu-gw"><button class="btn" id="qz-m-gwrong" type="button" hidden>只测语法错题（0）</button></p>
           </div>
 
           <!-- 答题面板 -->
@@ -163,6 +187,7 @@
             <div class="q-meta">
               <span class="chip" id="qz-dir">中 → 日</span>
               <span id="qz-pos">QUESTION 01 / 10</span>
+              <span class="q-timer" id="qz-timer" hidden>⏱ 20s</span>
               <span class="bar"></span>
               <span class="q-prog"><i id="qz-prog"></i></span>
             </div>

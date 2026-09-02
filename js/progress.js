@@ -7,6 +7,7 @@
  *   n5app.wrongGrammar  当前语法错题 id[]（v1.7）
  *   n5app.reviewCards   复习卡（v3.0·B1，spec §3.9）：id → {k,st,due,last}
  *   n5app.reviewGraduated  累计毕业卡数（v3.0·B1）
+ *   n5app.settings      测验设置（v3.0·B2，spec §3.5）：{count, scope, timer}
  *   n5app.version       数据版本 "1"
  * 设计约定：localStorage 不可用时静默降级为会话内存（A20）；
  *          任何变更立即持久化（A17/A18）；重置清除全部 n5app.* 键（A19）。
@@ -21,11 +22,13 @@
     wrongG: 'n5app.wrongGrammar',
     cards: 'n5app.reviewCards',
     grad: 'n5app.reviewGraduated',
+    settings: 'n5app.settings',
     version: 'n5app.version'
   };
   var MAX_HISTORY = 20;
+  var DEFAULT_SETTINGS = { count: 10, scope: 'all', timer: 0 };
 
-  var store = { learned: [], quiz: [], wrong: [], wrongG: [], cards: {}, grad: 0 };
+  var store = { learned: [], quiz: [], wrong: [], wrongG: [], cards: {}, grad: 0, settings: Object.assign({}, DEFAULT_SETTINGS) };
   var degraded = false; // localStorage 不可用时为 true（仅内存）
   var listeners = [];
 
@@ -34,6 +37,18 @@
       var raw = window.localStorage.getItem(key);
       return raw ? JSON.parse(raw) : fallback;
     } catch (e) { return fallback; }
+  }
+
+  /* 测验设置清洗（v3.0·B2，spec §4.5）：键缺失/非法值回默认 */
+  function sanitizeSettings(s) {
+    var out = { count: DEFAULT_SETTINGS.count, scope: DEFAULT_SETTINGS.scope, timer: DEFAULT_SETTINGS.timer };
+    if (!s || typeof s !== 'object') return out;
+    var c = +s.count;
+    if (c === 0 || c === 5 || c === 10 || c === 15 || c === 20) out.count = c;
+    if (s.scope === 'wrong') out.scope = 'wrong';
+    var t = +s.timer;
+    if (t === 0 || t === 20 || t === 30 || t === 45) out.timer = t;
+    return out;
   }
 
   function saveAll() {
@@ -45,6 +60,7 @@
       window.localStorage.setItem(KEYS.wrongG, JSON.stringify(store.wrongG));
       window.localStorage.setItem(KEYS.cards, JSON.stringify(store.cards));
       window.localStorage.setItem(KEYS.grad, String(store.grad));
+      window.localStorage.setItem(KEYS.settings, JSON.stringify(store.settings));
       window.localStorage.setItem(KEYS.version, '1');
     } catch (e) {
       degraded = true; // 降级：仅本会话内存
@@ -62,6 +78,7 @@
     store.wrongG = Array.isArray(store.wrongG) ? store.wrongG : [];
     store.cards = readJSON(KEYS.cards, {});
     store.grad = readJSON(KEYS.grad, 0);
+    store.settings = sanitizeSettings(readJSON(KEYS.settings, {}));
     if (typeof store.cards !== 'object' || store.cards === null || Array.isArray(store.cards)) store.cards = {};
     if (typeof store.grad !== 'number' || isNaN(store.grad)) store.grad = 0;
   }
@@ -73,7 +90,8 @@
       wrong: store.wrong.slice(),
       wrongG: store.wrongG.slice(),
       cards: Object.assign({}, store.cards),
-      grad: store.grad
+      grad: store.grad,
+      settings: Object.assign({}, store.settings)
     };
     listeners.forEach(function (fn) { try { fn(snapshot); } catch (e) {} });
   }
@@ -142,10 +160,18 @@
     reviewGrad: function () { return store.grad; },
     reviewGradAdd: function (n) { store.grad += n; saveAll(); emit(); },
 
+    /* —— 测验设置（v3.0·B2，spec §3.5） —— */
+    settingsGet: function () { return Object.assign({}, store.settings); },
+    settingsSet: function (patch) {
+      store.settings = sanitizeSettings(Object.assign({}, store.settings, patch || {}));
+      saveAll(); emit();
+    },
+
     /* —— 重置（A19：清除全部 n5app.* 键） —— */
     clearAll: function () {
       store.learned = []; store.quiz = []; store.wrong = []; store.wrongG = [];
       store.cards = {}; store.grad = 0;
+      store.settings = Object.assign({}, DEFAULT_SETTINGS);
       try {
         Object.keys(KEYS).forEach(function (k) { window.localStorage.removeItem(KEYS[k]); });
       } catch (e) { /* 内存模式无需处理 */ }

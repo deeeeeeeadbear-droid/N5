@@ -73,8 +73,9 @@ check(pos.join(',') === sorted.join(','), '脚本按依赖顺序加载');
 /* 5) 基础结构 */
 check(/^\s*<!DOCTYPE html>/i.test(HTML), 'DOCTYPE 位于文件首');
 check(HTML.includes('<meta charset="UTF-8">'), 'UTF-8 元信息存在');
-const dataV = (HTML.match(/data-v="[^"]+"/g) || []).length;
-check(dataV === 6, '导航含 6 个模块（当前 ' + dataV + '）');
+const navBlock = (HTML.match(/class="nav"[\s\S]*?<\/nav>/) || [''])[0];
+const navCount = (navBlock.match(/data-v="[^"]+"/g) || []).length;
+check(navCount === 6, '导航含 6 个模块（当前 ' + navCount + '）');
 
 console.log('-----------------------------');
 if (fails === 0) { console.log('✓ 静态审计通过，零问题'); process.exit(0); }

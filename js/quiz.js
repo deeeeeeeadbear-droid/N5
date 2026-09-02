@@ -1,7 +1,8 @@
 /* ==========================================================
- * N5 日语学习 MVP — 测验与进度模块（M5 + v1.7 语法自测）
+ * N5 日语学习 MVP — 测验与进度模块（M5 + v1.7 语法自测 + v3.0·B2 测验设置）
  * 单词测验（验收 A12–A20）+ 语法测验（验收 A21–A23，示例题库）
- * 结构：round = { type:'word'|'grammar', src:'all'|'wrong',
+ * v3.0·B2：题数/范围/计时设置（n5app.settings，spec §3.5，验收 A33–A36）
+ * 结构：round = { type:'word'|'grammar', src:'all'|'wrong', timer:秒数,
  *                items:[…], pos, answers:[bool] }
  * ========================================================== */
 (function () {
@@ -13,10 +14,14 @@
   var P = window.N5Progress;
   if (!WORDS.length || !P) { console.error('[N5] 测验模块：词库或进度不可用'); return; }
 
-  var ROUND_SIZE = 10;
+  var COUNT_CHOICES = [0, 5, 10, 15, 20]; // 0 = 全部（题源全量）
+  var TIMER_CHOICES = [0, 20, 30, 45];    // 秒；0 = 不限时
+  var DEFAULT_SETTINGS = { count: 10, scope: 'all', timer: 0 };
   var LETTERS = ['A', 'B', 'C', 'D'];
 
-  var round = null; // 当前轮
+  var round = null;    // 当前轮
+  var timerIv = null;  // 每题倒计时句柄（v3.0·B2）
+  var timerLeft = 0;
 
   function $(id) { return document.getElementById(id); }
   function esc(s) {
@@ -44,6 +49,17 @@
     return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
   }
   function pickN(list, n) { return shuffle(list).slice(0, n); }
+
+  /* v3.0·B2：读取并清洗测验设置（spec §4.5） */
+  function settings() {
+    var s = P.settingsGet() || {};
+    var out = { count: DEFAULT_SETTINGS.count, scope: DEFAULT_SETTINGS.scope, timer: DEFAULT_SETTINGS.timer };
+    if (COUNT_CHOICES.indexOf(+s.count) >= 0) out.count = +s.count;
+    if (s.scope === 'wrong') out.scope = 'wrong';
+    if (TIMER_CHOICES.indexOf(+s.timer) >= 0) out.timer = +s.timer;
+    return out;
+  }
+  function roundCap(count, poolLen) { return count ? Math.min(count, poolLen) : poolLen; }
 
   /* ================= 出题 ================= */
   function makeWordQ(wid) {
@@ -93,38 +109,66 @@
     };
   }
 
-  function buildRound(type, src) {
+  function buildRound(type, src, cap) {
     var poolIds;
     if (type === 'word') {
-      poolIds = src === 'wrong' ? pickN(P.wrongList(), ROUND_SIZE) : pickN(WORDS.map(function (w) { return w.id; }), ROUND_SIZE);
+      poolIds = src === 'wrong' ? P.wrongList() : WORDS.map(function (w) { return w.id; });
+      poolIds = pickN(poolIds, roundCap(cap, poolIds.length));
       if (!poolIds.length) return null;
       return { type: 'word', src: src, count: poolIds.length, items: poolIds.map(makeWordQ), pos: 0, answers: [] };
     }
-    poolIds = src === 'wrong' ? pickN(P.grammarWrongList(), ROUND_SIZE) : pickN(QBANK.map(function (q) { return q.id; }), Math.min(ROUND_SIZE, QBANK.length));
+    poolIds = src === 'wrong' ? P.grammarWrongList() : QBANK.map(function (q) { return q.id; });
+    poolIds = pickN(poolIds, roundCap(cap, poolIds.length));
     if (!poolIds.length) return null;
     return { type: 'grammar', src: src, count: poolIds.length, items: poolIds.map(makeGQ), pos: 0, answers: [] };
   }
 
   /* ================= 面板切换 ================= */
   function showMenu() {
+    clearTimer();
     var menu = $('qz-menu');
     if (menu) menu.hidden = false;
     var play = $('qz-play'); if (play) play.hidden = true;
     var res = $('qz-result'); if (res) res.hidden = true;
-    $('qz-m-word-n').textContent = String(P.wrongCount());
-    $('qz-m-grammar-n').textContent = String(P.grammarWrongCount());
-    var gw = $('qz-m-gwrong');
-    if (gw) {
-      var n = P.grammarWrongCount();
-      gw.hidden = n === 0;
-      gw.textContent = '只测语法错题（' + n + '）';
-    }
+    var s = settings();
+    paintSetSegs(s);
+    refreshMenuTexts(s);
     var h2 = $('qz-hint2');
     if (h2) h2.textContent = '';
   }
 
+  /* 设置面板分段按钮高亮（v3.0·B2） */
+  function paintSetSegs(s) {
+    function seg(boxId, active) {
+      var box = $(boxId);
+      if (!box) return;
+      Array.prototype.forEach.call(box.querySelectorAll('button'), function (b) {
+        b.classList.toggle('on', b.getAttribute('data-v') === active);
+      });
+    }
+    seg('qz-set-count', String(s.count));
+    seg('qz-set-scope', s.scope);
+    seg('qz-set-timer', String(s.timer));
+  }
+
+  /* 菜单文案随设置刷新 */
+  function refreshMenuTexts(s) {
+    var cnt = s.count ? (s.count + ' 题') : '全部';
+    var timerTxt = s.timer ? ' · 每题 ' + s.timer + ' 秒' : '';
+    var scopeTxt = s.scope === 'wrong' ? '错题专测' : '全部';
+    var d1 = $('qz-m-word-d');
+    if (d1) d1.textContent = cnt + ' · 中↔日双向 · 即时反馈' + timerTxt;
+    var d2 = $('qz-m-grammar-d');
+    if (d2) d2.textContent = cnt + ' · 填空选择 · 附解析（示例题库）' + timerTxt;
+    var i1 = $('qz-m-word-n'); if (i1) i1.textContent = String(P.wrongCount());
+    var i2 = $('qz-m-grammar-n'); if (i2) i2.textContent = String(P.grammarWrongCount());
+    var idx = $('idx-quiz');
+    if (idx) idx.textContent = '每轮 ' + cnt + ' · 范围 ' + scopeTxt + ' · 计时 ' + (s.timer ? s.timer + ' 秒' : '不限') + ' · 即时反馈';
+  }
+
   /* ================= 答题面板 ================= */
   function renderQuestion() {
+    clearTimer();
     $('qz-menu').hidden = true;
     var play = $('qz-play');
     play.hidden = false;
@@ -184,9 +228,45 @@
     var next = $('qz-next');
     next.disabled = true;
     next.textContent = round.pos + 1 === round.count ? '查看结果 →' : '下一题 →';
+    if (round.timer) startTimer(round.timer); // v3.0·B2：开启每题倒计时
   }
 
-  function onAnswer(optIdx) {
+  /* ---- 每题倒计时（v3.0·B2，A35） ---- */
+  function clearTimer() {
+    if (timerIv) { clearInterval(timerIv); timerIv = null; }
+    var el = $('qz-timer');
+    if (el) { el.hidden = true; el.classList.remove('warn'); }
+  }
+  function paintTimer() {
+    var el = $('qz-timer');
+    if (!el) return;
+    el.textContent = '⏱ ' + timerLeft + 's';
+    el.classList.toggle('warn', timerLeft <= 5);
+  }
+  function startTimer(sec) {
+    var el = $('qz-timer');
+    if (!el || !sec) return;
+    timerLeft = sec;
+    el.hidden = false;
+    paintTimer();
+    timerIv = setInterval(function () {
+      timerLeft -= 1;
+      if (timerLeft <= 0) {
+        clearInterval(timerIv);
+        timerIv = null;
+        onTimeout();
+      } else {
+        paintTimer();
+      }
+    }, 1000);
+  }
+  function onTimeout() {
+    if (!round || round.pos >= round.count) return;
+    onAnswer(-1, true); // 到时未答 → 按答错处理
+  }
+
+  function onAnswer(optIdx, timeUp) {
+    clearTimer(); // 作答即停表
     var q = round.items[round.pos];
     var right = optIdx === q.ans;
     round.answers.push(right);
@@ -201,6 +281,7 @@
 
     var fb = $('qz-fb');
     fb.classList.add('show', right ? 'is-ok' : 'is-ng');
+    var ngLead = timeUp ? '⏱ 超时 —— ' : '';
     if (q.kind === 'word') {
       var w = byWord(q.id);
       var wText = (w.kanji || w.kana) + '（' + w.kana + '）';
@@ -208,7 +289,7 @@
         fb.querySelector('.ok').textContent = '✓ 正解 —— 「' + w.meaning + '」对应 ' + wText + '。';
         if (P.hasWrong(q.id)) P.removeWrong(q.id);
       } else {
-        fb.querySelector('.ng').textContent = '✕ 不对 —— 正确答案是 ' + wText + '（' + w.meaning + '）。已记入错题清单。';
+        fb.querySelector('.ng').textContent = ngLead + '✕ 不对 —— 正确答案是 ' + wText + '（' + w.meaning + '）。已记入错题清单。';
         P.addWrong(q.id);
       }
     } else {
@@ -218,7 +299,7 @@
         fb.querySelector('.ok').textContent = '✓ 正解 —— 解析：' + gq.explain;
         if (P.hasGrammarWrong(q.id)) P.removeGrammarWrong(q.id);
       } else {
-        fb.querySelector('.ng').textContent = '✕ 答错了 —— 正确答案是「' + ansTxt + '」。解析：' + gq.explain;
+        fb.querySelector('.ng').textContent = ngLead + '✕ 答错了 —— 正确答案是「' + ansTxt + '」。解析：' + gq.explain;
         P.addGrammarWrong(q.id);
       }
     }
@@ -230,6 +311,7 @@
   }
 
   function finishRound() {
+    clearTimer();
     var total = round.count;
     var correct = round.answers.filter(Boolean).length;
     var wrongIds = [];
@@ -278,7 +360,9 @@
     btn.textContent = round.type === 'word'
       ? '只测错词（' + nWrong + '）'
       : '只测语法错题（' + nWrong + '）';
-    $('qz-again-all').textContent = round.type === 'word' ? '再测一轮（10 题单词）' : '再测语法（10 题）';
+    var st2 = settings();
+    var poolLen = round.type === 'word' ? WORDS.length : QBANK.length;
+    $('qz-again-all').textContent = (round.type === 'word' ? '再测一轮（' : '再测语法（') + roundCap(st2.count, poolLen) + ' 题）';
     var h2 = $('qz-hint2');
     if (h2) h2.textContent = round.type === 'word'
       ? '本轮已记入测验历史；答对的错词已移出清单。'
@@ -347,23 +431,48 @@
   }
 
   /* ================= 事件绑定 ================= */
-  function startRound(type, src) {
-    round = buildRound(type, src || 'all');
+  function startRound(type, srcArg) {
+    var s = settings();
+    var src = srcArg || s.scope; // 未显式指定来源时按设置「范围」
     var h2 = $('qz-hint2');
+    round = buildRound(type, src, s.count);
     if (!round) {
-      if (type === 'grammar' && src === 'wrong') h2.textContent = '当前没有语法错题 —— 已开始全题库语法测验。';
-      else if (type === 'word' && src === 'wrong') h2.textContent = '当前没有错词 —— 已开始全库测验。';
-      round = buildRound(type, 'all');
-      if (!round) { h2.textContent = '题库为空，请检查数据。'; showMenu(); return; }
+      if (src === 'wrong') {
+        if (h2) h2.textContent = (type === 'word' ? '当前没有错词 —— ' : '当前没有语法错题 —— ') + '已按范围「全部」开始（设置保留为错题专测）。';
+      }
+      round = buildRound(type, 'all', s.count);
+      if (!round) {
+        if (h2) h2.textContent = '题库为空，请检查数据。';
+        showMenu();
+        return;
+      }
+    } else if (src === 'wrong' && round.count < s.count) {
+      if (h2) h2.textContent = '错题仅 ' + round.count + ' 条 —— 本轮按实际错题数出题。';
     }
+    round.timer = s.timer; // 轮次快照：中途改设置不影响本轮
     renderQuestion();
   }
 
+  /* 设置面板分段点击（v3.0·B2） */
+  function bindSetSeg(boxId, apply) {
+    var box = $(boxId);
+    if (!box) return;
+    Array.prototype.forEach.call(box.querySelectorAll('button'), function (b) {
+      b.addEventListener('click', function () {
+        apply(b.getAttribute('data-v'));
+        var s = settings();
+        paintSetSegs(s);
+        refreshMenuTexts(s);
+      });
+    });
+  }
+
   function bindQuiz() {
-    $('qz-m-word').addEventListener('click', function () { startRound('word', 'all'); });
-    $('qz-m-grammar').addEventListener('click', function () { startRound('grammar', 'all'); });
-    var gw = $('qz-m-gwrong');
-    if (gw) gw.addEventListener('click', function () { startRound('grammar', 'wrong'); });
+    $('qz-m-word').addEventListener('click', function () { startRound('word'); });
+    $('qz-m-grammar').addEventListener('click', function () { startRound('grammar'); });
+    bindSetSeg('qz-set-count', function (v) { P.settingsSet({ count: +v }); });
+    bindSetSeg('qz-set-scope', function (v) { P.settingsSet({ scope: v }); });
+    bindSetSeg('qz-set-timer', function (v) { P.settingsSet({ timer: +v }); });
 
     $('qz-opts').addEventListener('click', function (e) {
       if (!round) return;
@@ -419,6 +528,8 @@
         if (round && round.pos < round.count) renderQuestion();       // 续答进行中的轮
         else if (round && round.pos >= round.count) { /* 停留在结算 */ }
         else showMenu();
+      } else {
+        clearTimer(); // 离开测验视图：暂停倒计时，不判超时（A35）
       }
     }
   };

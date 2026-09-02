@@ -451,3 +451,20 @@ body {
   .rv-face .q { font-size: 19px; }
   .rv-ans .a-main { font-size: 20px; }
 }
+
+/* ===== v3.0·B2 测验设置面板与倒计时（spec §3.5） ===== */
+.qz-set { border-top: 1px dashed var(--line); padding-top: 14px; margin: -4px 0 18px; }
+.set-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.set-lab { font-size: 12px; letter-spacing: .2em; color: var(--red); font-weight: 800; flex: none; }
+.set-seg { display: inline-flex; border: 2px solid var(--ink); flex-wrap: nowrap; }
+.set-seg button { border: 0; border-right: 1px solid var(--line); background: none; font-family: var(--sans); font-size: 14px; font-weight: 700; letter-spacing: .05em; color: var(--ink2); padding: 7px 13px; cursor: pointer; }
+.set-seg button:last-child { border-right: 0; }
+.set-seg button:hover { background: var(--sel); color: var(--ink); }
+.set-seg button.on { background: var(--ink); color: #fff; }
+.set-note { font-size: 12px; color: #a29f94; letter-spacing: .04em; margin: 8px 0 0; }
+.q-timer { border: 2px solid var(--ink); font-size: 13px; font-weight: 800; letter-spacing: .08em; padding: 2px 10px; font-variant-numeric: tabular-nums; flex: none; }
+.q-timer.warn { border-color: var(--red); color: var(--red); }
+@media (max-width: 700px) {
+  .set-row { gap: 8px; }
+  .set-lab { width: 100%; }
+}
