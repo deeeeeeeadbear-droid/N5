@@ -538,3 +538,16 @@ body {
 @media (max-width: 640px) {
   .td-grid { grid-template-columns: 1fr; }
 }
+
+/* ===== v3.0·B5 进度备份面板（spec §3.12） ===== */
+.bz-panel { margin-bottom: 18px; }
+.bz-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 6px 2px 2px; }
+.bz-hint { font-size: 12px; color: var(--ink2); line-height: 1.8; letter-spacing: .03em; margin: 2px 0 8px; }
+.bz-confirm { border: 2px dashed var(--red); background: #fdf6f5; padding: 12px 16px 14px; margin: 6px 0 8px; }
+.bz-info { font-size: 13.5px; color: var(--ink); line-height: 2; letter-spacing: .03em; }
+.bz-info b { color: #a3121a; }
+.bz-info i { font-style: normal; color: #a3121a; font-size: 12.5px; }
+.bz-acts { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+.bz-msg { min-height: 1.6em; font-size: 13.5px; font-weight: 700; letter-spacing: .04em; margin: 4px 2px 0; line-height: 1.8; }
+.bz-msg.ok { color: var(--green); }
+.bz-msg.err { color: #a3121a; }

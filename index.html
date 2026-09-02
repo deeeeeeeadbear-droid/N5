@@ -284,6 +284,24 @@
           </div>
         </div>
 
+        <div class="pv-panel bz-panel">
+          <h3>进度备份（导出 / 导入）<small>JSON 文件 · 换浏览器 / 清理前先导出</small></h3>
+          <div class="bz-row">
+            <button class="btn" id="bz-export" type="button">⬇ 导出备份（JSON）</button>
+            <button class="btn" id="bz-import" type="button">⬆ 导入备份…</button>
+            <input type="file" id="bz-file" accept=".json,application/json" hidden>
+          </div>
+          <p class="bz-hint">导出下载包含全部学习记录（已学 · 测验历史 · 错题 · 复习卡 · 阅读已读 · 测验设置）的 JSON 文件；导入用备份整体替换本机进度 —— 选择文件后会先显示摘要并二次确认。</p>
+          <div class="bz-confirm" id="bz-confirm" hidden>
+            <p class="bz-info" id="bz-info"></p>
+            <div class="bz-acts">
+              <button class="btn fill" id="bz-yes" type="button">确认导入并覆盖</button>
+              <button class="btn" id="bz-no" type="button">取消</button>
+            </div>
+          </div>
+          <p class="bz-msg" id="bz-msg"></p>
+        </div>
+
         <div class="pv-reset-zone">
           <button class="btn" id="pv-reset" type="button">重置全部进度</button>
           <span class="pv-note">清除本机全部学习记录（已学 · 测验历史 · 错题 · 复习卡），不可恢复</span>
@@ -353,6 +371,7 @@
 <script src="js/review.js"></script>
 <script src="js/stats.js"></script>
 <script src="js/today.js"></script>
+<script src="js/backup.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

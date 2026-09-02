@@ -10,6 +10,7 @@
  *   n5app.settings      测验设置（v3.0·B2，spec §3.5）：{count, scope, timer}
  *   n5app.readDone      阅读已读篇目 id[]（v3.0·B3，spec §3.10）
  *   n5app.version       数据版本 "1"
+ * 备份：backup()/restore() 供导出/导入使用（v3.0·B5，spec §3.12/§4.8）
  * 设计约定：localStorage 不可用时静默降级为会话内存（A20）；
  *          任何变更立即持久化（A17/A18）；重置清除全部 n5app.* 键（A19）。
  * ========================================================== */
@@ -54,6 +55,14 @@
     var t = +s.timer;
     if (t === 0 || t === 20 || t === 30 || t === 45) out.timer = t;
     return out;
+  }
+  function nowDayStr() {
+    var d = new Date();
+    return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+  }
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+  function strArr(a) {
+    return Array.isArray(a) ? a.filter(function (x) { return typeof x === 'string'; }) : null;
   }
 
   function saveAll() {
@@ -174,6 +183,77 @@
     settingsSet: function (patch) {
       store.settings = sanitizeSettings(Object.assign({}, store.settings, patch || {}));
       saveAll(); emit();
+    },
+
+    /* —— 备份导出/导入（v3.0·B5，spec §3.12/§4.8） —— */
+    backup: function () {
+      return {
+        learned: store.learned.slice(),
+        quiz: store.quiz.map(function (r) {
+          return {
+            type: r.type, date: r.date, total: r.total, correct: r.correct,
+            wrongIds: r.wrongIds.slice(),
+            seen: r.seen ? r.seen.slice() : undefined
+          };
+        }),
+        wrong: store.wrong.slice(),
+        wrongG: store.wrongG.slice(),
+        readDone: store.readDone.slice(),
+        cards: Object.assign({}, store.cards),
+        grad: store.grad,
+        settings: Object.assign({}, store.settings)
+      };
+    },
+    /* 整体恢复：必需键缺失/类型非法返回 false；卡片与设置做键级清洗 */
+    restore: function (b) {
+      if (!b || typeof b !== 'object') return false;
+      var learned = strArr(b.learned);
+      var wrong = strArr(b.wrong);
+      var wrongG = strArr(b.wrongG);
+      var readDone = strArr(b.readDone);
+      if (!learned || !wrong || !wrongG || !readDone) return false;
+      if (!Array.isArray(b.quiz)) return false;
+
+      var quiz = b.quiz.filter(function (r) {
+        return r && (r.type === 'words' || r.type === 'grammar') &&
+          typeof r.date === 'string' && isFinite(+r.total) && isFinite(+r.correct) &&
+          Array.isArray(r.wrongIds) && (r.seen === undefined || Array.isArray(r.seen));
+      }).map(function (r) {
+        return {
+          type: r.type,
+          date: String(r.date),
+          total: Math.max(0, (+r.total) | 0),
+          correct: Math.max(0, (+r.correct) | 0),
+          wrongIds: r.wrongIds.filter(function (x) { return typeof x === 'string'; }),
+          seen: r.seen ? r.seen.filter(function (x) { return typeof x === 'string'; }) : undefined
+        };
+      }).slice(-MAX_HISTORY);
+
+      var cards = {};
+      if (b.cards && typeof b.cards === 'object' && !Array.isArray(b.cards)) {
+        Object.keys(b.cards).forEach(function (id) {
+          var c = b.cards[id];
+          if (!c || typeof c !== 'object') return;
+          var st = Math.min(5, Math.max(0, (+c.st) | 0));
+          var due = (typeof c.due === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(c.due)) ? c.due : nowDayStr();
+          var last = (typeof c.last === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(c.last)) ? c.last : '';
+          cards[id] = { k: c.k === 'g' ? 'g' : 'w', st: st, due: due, last: last };
+        });
+      }
+      var grad = (isFinite(+b.grad) && +b.grad >= 0) ? Math.floor(+b.grad) : 0;
+
+      store.learned = learned;
+      store.quiz = quiz;
+      store.wrong = wrong;
+      store.wrongG = wrongG;
+      store.readDone = readDone;
+      store.cards = cards;
+      store.grad = grad;
+      store.settings = sanitizeSettings(Object.assign({}, DEFAULT_SETTINGS,
+        (b.settings && typeof b.settings === 'object') ? b.settings : {}));
+      saveAll();
+      emit();
+      return true;
     },
 
     /* —— 阅读已读（v3.0·B3，spec §3.10） —— */
