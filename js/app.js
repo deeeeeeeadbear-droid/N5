@@ -55,4 +55,5 @@
   if (window.N5Quiz && document.getElementById('view-quiz')) N5Quiz.init();
   if (window.N5Review && document.getElementById('view-review')) N5Review.init();
   if (window.N5Stats && document.getElementById('view-progress')) N5Stats.init();
+  if (window.N5Today && document.getElementById('view-progress')) N5Today.init();
 })();
