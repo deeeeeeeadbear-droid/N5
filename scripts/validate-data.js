@@ -24,7 +24,7 @@ function err(msg) { errorCount++; errors.push(msg); }
 function loadData() {
   const sandbox = { window: {} };
   vm.createContext(sandbox);
-  for (const f of ['words', 'grammar', 'reading']) {
+  for (const f of ['words', 'grammar', 'reading', 'quiz-grammar']) {
     const code = fs.readFileSync(path.join(ROOT, 'data', f + '.js'), 'utf8');
     vm.runInContext(code, sandbox, { filename: f + '.js' });
   }
@@ -192,11 +192,39 @@ reading.forEach(p => {
   });
 });
 
+// 语法测验题库（§4.6）
+const qg = data.quizGrammar || [];
+if (qg.length < 12) err('语法测验题库条数不足：' + qg.length + '（要求 ≥12，正式版全量扩充）');
+const qgIds = new Set();
+qg.forEach(q => {
+  if (!q || typeof q.id !== 'string' || !/^gq\d{4}$/.test(q.id)) { err('语法题 id 格式错误：' + (q && q.id)); return; }
+  if (qgIds.has(q.id)) err('语法题 id 重复：' + q.id); qgIds.add(q.id);
+  checkRequired(q, q.id, ['question', 'hint', 'options', 'answer', 'explain']);
+  if (typeof q.question === 'string') {
+    const blanks = q.question.split('＿').length - 1;
+    if (blanks !== 1) err('[' + q.id + '] 题干须含且仅含一个填空位 ＿（当前 ' + blanks + ' 个）');
+  }
+  if (!Array.isArray(q.options) || q.options.length !== 4) {
+    err('[' + q.id + '] options 须为 4 个选项');
+  } else {
+    const seen = new Set();
+    q.options.forEach(o => {
+      if (typeof o !== 'string' || !o.trim()) err('[' + q.id + '] 选项不能为空');
+      if (seen.has(o)) err('[' + q.id + '] 选项重复：' + o);
+      seen.add(o);
+    });
+    if (typeof q.answer !== 'number' || q.answer < 0 || q.answer > 3 || !Number.isInteger(q.answer)) {
+      err('[' + q.id + '] answer 须为 0–3 的整数');
+    }
+  }
+});
+
 /* ---------- 输出 ---------- */
 console.log('===== N5 数据完整性校验 =====');
 console.log('词库   : ' + words.length + ' 词（要求 ≥150）');
 console.log('语法   : ' + grammar.length + ' 条（要求 ≥25）—— 助词 ' + (groupCount['助词'] || 0) + ' / 动词活用 ' + (groupCount['动词活用'] || 0) + ' / 句型 ' + (groupCount['句型'] || 0));
 console.log('阅读   : ' + reading.length + ' 篇（要求 ≥3）');
+console.log('语法题 : ' + qg.length + ' 题（要求 ≥12，示例题库）');
 console.log('-----------------------------');
 if (errorCount === 0) {
   console.log('✓ 校验通过：全部数据字段与标记格式正确，零错误');
