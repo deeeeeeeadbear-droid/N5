@@ -187,7 +187,7 @@ if ((groupCount['句型'] || 0) < 32) err('句型组不足 32 条：当前 ' + (
 
 // 阅读
 const reading = data.reading || [];
-if (reading.length < 3) err('阅读篇数不足：' + reading.length + '（要求 ≥3）');
+if (reading.length < 10) err('阅读篇数不足：' + reading.length + '（要求 ≥10，v2.0 M9）');
 const rIds = new Set();
 reading.forEach(p => {
   if (!p || typeof p.id !== 'string' || !/^r\d{4}$/.test(p.id)) { err('阅读 id 格式错误：' + (p && p.id)); return; }
@@ -232,7 +232,7 @@ qg.forEach(q => {
 console.log('===== N5 数据完整性校验 =====');
 console.log('词库   : ' + words.length + ' 词（要求 ≥800）');
 console.log('语法   : ' + grammar.length + ' 条（要求 ≥70）—— 助词 ' + (groupCount['助词'] || 0) + ' / 动词活用 ' + (groupCount['动词活用'] || 0) + ' / 句型 ' + (groupCount['句型'] || 0));
-console.log('阅读   : ' + reading.length + ' 篇（要求 ≥3）');
+console.log('阅读   : ' + reading.length + ' 篇（要求 ≥10）');
 console.log('语法题 : ' + qg.length + ' 题（要求 ≥12，示例题库）');
 console.log('-----------------------------');
 if (errorCount === 0) {
