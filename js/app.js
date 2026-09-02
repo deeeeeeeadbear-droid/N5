@@ -58,11 +58,11 @@
     if (el) el.textContent = text;
   }
   if (DATA) {
-    /* idx-words 由 js/words.js 接管；idx-grammar 由 js/grammar.js 接管（含当前条目） */
-    setIdx('idx-reading', ((DATA.reading && DATA.reading.length) || 0) + ' PASSAGES · 难度 N5');
+    /* idx-words / idx-grammar / idx-reading 由对应模块接管 */
   }
 
-  /* ---- 已实现的模块初始化（M2 单词 · M3 语法） ---- */
+  /* ---- 已实现的模块初始化（M2 单词 · M3 语法 · M4 阅读） ---- */
   if (window.N5Words && document.getElementById('view-words')) N5Words.init();
   if (window.N5Grammar && document.getElementById('view-grammar')) N5Grammar.init();
+  if (window.N5Reading && document.getElementById('view-reading')) N5Reading.init();
 })();

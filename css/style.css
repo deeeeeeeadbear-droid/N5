@@ -230,3 +230,61 @@ body {
   .g-pattern { font-size: 34px; }
   .gmeta { grid-template-columns: 76px minmax(0, 1fr); gap: 12px; font-size: 15px; }
 }
+
+/* ==========================================================
+   M4 阅读模块 — 注音正文 + 生词栏 + 释义浮层 + 翻译开关
+   ========================================================== */
+.read-grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; border: 2px solid var(--ink); background: var(--card); }
+.read-main { padding: 26px 34px 30px; min-width: 0; }
+.r-count { font-size: 13px; letter-spacing: .22em; color: var(--ink2); font-weight: 700; margin-bottom: 8px; }
+.r-title { font-size: 32px; font-weight: 800; letter-spacing: .03em; }
+.r-titlecn { font-size: 16px; color: var(--ink2); letter-spacing: .12em; margin-top: 2px; }
+.r-desc { display: flex; gap: 16px; margin-top: 12px; padding-bottom: 14px; border-bottom: 1px solid var(--line); font-size: 13px; letter-spacing: .14em; color: var(--ink2); font-weight: 700; }
+.r-body { font-size: 23px; line-height: 2.5; margin: 20px 0 8px; font-weight: 500; }
+.r-body ruby rt { font-size: 11px; color: var(--ink2); font-weight: 400; }
+.r-body .gloss { border-bottom: 2px solid var(--red); padding-bottom: 1px; cursor: pointer; }
+.r-body .gloss.hit { background: var(--sel); box-shadow: inset 0 -3px 0 var(--red); }
+.r-legend { font-size: 12px; color: var(--ink2); letter-spacing: .04em; margin: 4px 0 12px; }
+.r-acts { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.tr-toggle { border: 2px solid var(--ink); background: none; padding: 8px 20px; font-size: 15px; font-weight: 700; cursor: pointer; letter-spacing: .12em; font-family: var(--sans); }
+.tr-toggle:hover { background: var(--ink); color: #fff; }
+.btn.ghost { border-color: transparent; color: var(--ink2); padding: 8px 14px; font-size: 14px; }
+.btn.ghost:hover { background: transparent; color: var(--ink); }
+.tr-cn { display: none; font-size: 16px; color: var(--ink2); line-height: 2; padding: 14px 0 2px; border-top: 1px dashed var(--line); margin-top: 16px; }
+.tr-cn.open { display: block; }
+
+.r-aside { border-left: 2px solid var(--ink); padding: 22px 20px; background: #fbfaf7; min-width: 0; }
+.r-aside h4 { font-size: 14px; letter-spacing: .3em; color: var(--red); font-weight: 800; margin-bottom: 4px; }
+.r-aside .aside-note { font-size: 12px; color: var(--ink2); letter-spacing: .04em; margin-bottom: 12px; }
+.r-aside ul { list-style: none; }
+.r-aside li { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 8px; align-items: baseline; padding: 10px 6px; border-bottom: 1px solid var(--line); cursor: pointer; }
+.r-aside li:hover { background: var(--sel); }
+.r-aside li.hit { background: var(--sel); box-shadow: inset 3px 0 0 var(--red); }
+.r-aside li .n { font-size: 12px; color: #aaa79c; font-variant-numeric: tabular-nums; }
+.r-aside li .g-w { font-size: 17px; font-weight: 800; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.r-aside li .g-k { font-size: 13px; color: var(--ink2); font-weight: 500; }
+.r-aside li .g-m { font-size: 13px; color: var(--ink2); text-align: right; }
+.r-aside .aside-tip { margin-top: 16px; font-size: 12px; color: #a29f94; letter-spacing: .06em; }
+
+/* 释义浮层 */
+.pop {
+  display: none; position: fixed; z-index: 200; width: 340px; max-width: calc(100vw - 20px);
+  background: var(--card); border: 2px solid var(--ink); padding: 16px 18px 12px;
+  box-shadow: 8px 8px 0 rgba(23, 23, 23, .14);
+}
+.pop.show { display: block; }
+.pop-head { display: flex; align-items: baseline; gap: 12px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-bottom: 10px; }
+.pop-w { font-size: 20px; font-weight: 800; letter-spacing: .04em; }
+.pop-k { font-size: 14px; color: var(--ink2); }
+.pop-pos { font-size: 12px; color: var(--ink2); border: 1px solid var(--line); padding: 0 8px; border-radius: 3px; font-weight: 700; }
+.pop-x { margin-left: auto; border: 0; background: none; font-size: 15px; color: var(--ink2); cursor: pointer; font-family: var(--sans); line-height: 1; }
+.pop-x:hover { color: var(--red); }
+.pop-me { font-size: 16px; font-weight: 600; line-height: 1.7; }
+.pop-tip { margin-top: 10px; font-size: 11px; color: #a29f94; letter-spacing: .05em; }
+
+@media (max-width: 1225px) {
+  .read-grid { grid-template-columns: 1fr; }
+  .r-aside { border-left: 0; border-top: 2px solid var(--ink); }
+  .r-body { font-size: 18px; }
+  .pop { width: min(340px, calc(100vw - 30px)); }
+}
